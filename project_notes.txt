@@ -1,0 +1,22 @@
+Project Name:
+SEC 10-K Intelligence Assistant
+
+Project Summary:
+Built a RAG-based financial document intelligence app using public SEC EDGAR 10-K filings. The system downloads a company’s latest 10-K, parses and chunks the filing text, generates OpenAI embeddings, stores vectors in ChromaDB, retrieves relevant document chunks, and generates source-grounded answers through a Streamlit interface.
+
+Tools Used:
+Python, Streamlit, ChromaDB, OpenAI Embeddings, OpenAI Chat Model, SEC EDGAR API, BeautifulSoup, dotenv
+
+Tested Questions:
+1. What are the company's main risk factors?
+2. What are the company's top 5 risk factors?
+3. Summarize the business model in simple terms.
+4. What does the company say about cybersecurity?
+5. What are the major legal and regulatory risks?
+6. What does the company say about competition?
+
+Current Status:
+MVP successfully built and tested locally. Screenshots saved for portfolio documentation.
+
+Next Version:
+Add section filters for Risk Factors, Business, MD&A, Cybersecurity, Legal Proceedings, and Financial Statements.

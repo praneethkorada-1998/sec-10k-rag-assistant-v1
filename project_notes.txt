@@ -20,3 +20,6 @@ MVP successfully built and tested locally. Screenshots saved for portfolio docum
 
 Next Version:
 Add section filters for Risk Factors, Business, MD&A, Cybersecurity, Legal Proceedings, and Financial Statements.
+
+GitHub Repository:
+https://github.com/praneethkorada-1998/sec-10k-rag-assistant-v1

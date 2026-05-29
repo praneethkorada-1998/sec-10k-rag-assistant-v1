@@ -35,3 +35,15 @@ May 6, 2026
 
 Next Planned Upgrade:
 Version 2 - Add section filters for Risk Factors, Business, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks.
+
+Version 2 Status:
+Added section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks.
+
+Version 2 Features:
+- Added lightweight section tagging for SEC 10-K chunks
+- Added section filter dropdown in Streamlit
+- Enabled targeted retrieval using ticker and section metadata
+- Updated retrieved source display to show section names
+
+Completion Date:
+May 7, 2026

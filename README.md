@@ -96,3 +96,21 @@ MVP completed and tested locally using Streamlit.
 
 The `.env` file is not included in GitHub because it contains private API credentials.
 
+## Version Updates
+
+### Version 1: RAG MVP
+- Built a Streamlit-based SEC 10-K Intelligence Assistant
+- Added public SEC EDGAR 10-K filing ingestion
+- Added document parsing, chunking, OpenAI embeddings, ChromaDB vector storage, semantic retrieval, and source-grounded answer generation
+
+### Version 2: Section Filters
+- Added section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks
+- Added lightweight section tagging for SEC 10-K chunks
+- Improved targeted retrieval using ticker and section metadata
+- Updated retrieved source display to show section names
+
+### Version 3: Docker and Evaluation Preparation
+- Added Dockerfile for containerized Streamlit app execution
+- Added .dockerignore to prevent secrets, local vector database files, cache files, and screenshots from being copied into Docker images
+- Added evaluation_questions.md to manually test retrieval quality across key SEC 10-K sections
+

@@ -19,31 +19,15 @@ Notes:
 - Keep .env private and never upload it to GitHub.
 - ChromaDB persists locally in ./chroma_db.
 """
-
-import os
-import re
-import time
-from typing import Dict, List, Tuple
-
-import requests
 import streamlit as st
-from bs4 import BeautifulSoup
-from dotenv import load_dotenv
-from src.parser import SECTION_OPTIONS, chunk_text, clean_text, detect_section
-from src.embeddings import get_embedding, get_embeddings_batch
-from src.vector_store import retrieve_context, upsert_chunks
-from src.rag import generate_answer
+
 from src.config import OPENAI_API_KEY
 from src.ingestion import ingest_10k
+from src.parser import SECTION_OPTIONS
+from src.rag import generate_answer
+from src.sec_client import COMPANIES
+from src.vector_store import retrieve_context
 
-from src.config import (
-    OPENAI_API_KEY,
-    SEC_USER_AGENT,
-    EMBEDDING_MODEL,
-    CHAT_MODEL,
-)
-
-from src.sec_client import COMPANIES, download_filing_html
 
 if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")

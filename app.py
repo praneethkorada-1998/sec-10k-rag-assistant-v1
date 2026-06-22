@@ -32,10 +32,15 @@ from src.vector_store import retrieve_context
 if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")
 
-st.set_page_config(page_title="SEC 10-K Intelligence Assistant V2", layout="wide")
+st.set_page_config(
+    page_title="SEC 10-K Intelligence Assistant V3",
+    layout="wide",
+)
 
-st.title("SEC 10-K Intelligence Assistant — V2")
-st.caption("Public SEC filings + OpenAI embeddings + ChromaDB + Streamlit + section filters")
+st.title("SEC 10-K Intelligence Assistant - V3")
+st.caption(
+    "Modular SEC filing ingestion, semantic retrieval, and source-grounded answers"
+)
 
 with st.sidebar:
     st.header("1. Ingest Filing")

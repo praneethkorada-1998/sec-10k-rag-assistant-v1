@@ -32,12 +32,12 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from openai import OpenAI
 
-load_dotenv()
-
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-SEC_USER_AGENT = os.getenv("SEC_USER_AGENT", "SEC 10-K RAG Demo contact@example.com")
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-3-small")
-CHAT_MODEL = os.getenv("CHAT_MODEL", "gpt-4.1-mini")
+from src.config import (
+    OPENAI_API_KEY,
+    SEC_USER_AGENT,
+    EMBEDDING_MODEL,
+    CHAT_MODEL,
+)
 
 if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")

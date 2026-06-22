@@ -29,10 +29,11 @@ import requests
 import streamlit as st
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
-from openai import OpenAI
 from src.parser import SECTION_OPTIONS, chunk_text, clean_text, detect_section
 from src.embeddings import get_embedding, get_embeddings_batch
 from src.vector_store import retrieve_context, upsert_chunks
+from src.rag import generate_answer
+from src.config import OPENAI_API_KEY
 
 from src.config import (
     OPENAI_API_KEY,
@@ -45,8 +46,6 @@ from src.sec_client import COMPANIES, download_filing_html
 
 if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")
-
-client = OpenAI(api_key=OPENAI_API_KEY)
 
 def ingest_10k(ticker: str) -> int:
     """Download, chunk, classify, embed, and store a company's latest 10-K."""
@@ -91,17 +90,6 @@ def ingest_10k(ticker: str) -> int:
     )
 
     return len(chunks)
-
-def generate_answer(question: str, contexts: List[Dict], selected_section: str) -> str:
-    context_block = "\n\n".join(
-        [
-            f"Source {i + 1} | Ticker: {ctx['metadata']['ticker']} | "
-            f"Filing Date: {ctx['metadata']['filing_date']} | "
-            f"Section: {ctx['metadata'].get('section_name', 'General')} | "
-            f"Chunk: {ctx['metadata']['chunk_number']}\n{ctx['text']}"
-            for i, ctx in enumerate(contexts)
-        ]
-    )
 
     prompt = f"""
 You are a careful financial document assistant. Answer the user's question using only the provided SEC 10-K context.

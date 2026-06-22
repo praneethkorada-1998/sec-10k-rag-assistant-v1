@@ -31,6 +31,7 @@ import streamlit as st
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from openai import OpenAI
+from src.parser import SECTION_OPTIONS, chunk_text, clean_text, detect_section
 
 from src.config import (
     OPENAI_API_KEY,
@@ -47,124 +48,6 @@ if not OPENAI_API_KEY:
 client = OpenAI(api_key=OPENAI_API_KEY)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(name="sec_10k_filings_v2")
-
-SECTION_OPTIONS = [
-    "All Sections",
-    "Business",
-    "Risk Factors",
-    "Cybersecurity",
-    "Competition",
-    "Legal / Regulatory",
-    "Financial Risks",
-]
-
-def clean_text(raw_html: str) -> str:
-    """Convert SEC filing HTML into readable text."""
-    soup = BeautifulSoup(raw_html, "html.parser")
-
-    for tag in soup(["script", "style", "table"]):
-        tag.decompose()
-
-    text = soup.get_text(separator="\n")
-    text = re.sub(r"\n{2,}", "\n", text)
-    text = re.sub(r"[ \t]{2,}", " ", text)
-    return text.strip()
-
-
-def detect_section(chunk: str) -> str:
-    """
-    Lightweight section classifier for MVP Version 2.
-    This does not perfectly parse formal SEC item boundaries, but it gives useful section metadata for filtering.
-    """
-    text = chunk.lower()
-
-    risk_terms = [
-        "risk factors",
-        "risks related",
-        "could adversely affect",
-        "material adverse effect",
-        "uncertainties",
-    ]
-    cyber_terms = [
-        "cybersecurity",
-        "cyber security",
-        "data security",
-        "information security",
-        "security breach",
-        "ransomware",
-        "unauthorized access",
-    ]
-    competition_terms = [
-        "competition",
-        "competitive",
-        "competitors",
-        "compete",
-        "market share",
-    ]
-    legal_terms = [
-        "legal proceedings",
-        "regulatory",
-        "regulation",
-        "compliance",
-        "laws and regulations",
-        "litigation",
-        "government investigation",
-    ]
-    financial_terms = [
-        "financial condition",
-        "liquidity",
-        "cash flows",
-        "interest rates",
-        "credit risk",
-        "market risk",
-        "foreign exchange",
-        "revenue",
-        "operating results",
-    ]
-    business_terms = [
-        "business",
-        "products and services",
-        "customers",
-        "operations",
-        "segments",
-        "strategy",
-    ]
-
-    def has_any(terms: List[str]) -> bool:
-        return any(term in text for term in terms)
-
-    # Priority matters. More specific sections first.
-    if has_any(cyber_terms):
-        return "Cybersecurity"
-    if has_any(risk_terms):
-        return "Risk Factors"
-    if has_any(legal_terms):
-        return "Legal / Regulatory"
-    if has_any(competition_terms):
-        return "Competition"
-    if has_any(financial_terms):
-        return "Financial Risks"
-    if has_any(business_terms):
-        return "Business"
-
-    return "General"
-
-
-def chunk_text(text: str, chunk_size: int = 3500, overlap: int = 500) -> List[str]:
-    """Simple character-based chunking for MVP. Later replace with token-aware chunking."""
-    chunks = []
-    start = 0
-    text_length = len(text)
-
-    while start < text_length:
-        end = min(start + chunk_size, text_length)
-        chunk = text[start:end].strip()
-        if chunk:
-            chunks.append(chunk)
-        start += chunk_size - overlap
-
-    return chunks
-
 
 def get_embedding(text: str) -> List[float]:
     response = client.embeddings.create(

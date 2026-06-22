@@ -114,3 +114,28 @@ The `.env` file is not included in GitHub because it contains private API creden
 - Added .dockerignore to prevent secrets, local vector database files, cache files, and screenshots from being copied into Docker images
 - Added evaluation_questions.md to manually test retrieval quality across key SEC 10-K sections
 
+
+## Version 3 Architecture
+
+```mermaid
+flowchart TD
+    UI[Streamlit app.py] --> ING[Ingestion Pipeline]
+    ING --> SEC[SEC EDGAR Client]
+    ING --> PARSER[Parser and Section Classifier]
+    ING --> EMB[OpenAI Embeddings]
+    EMB --> VECTOR[ChromaDB Vector Store]
+    UI --> VECTOR
+    VECTOR --> RAG[RAG Answer Generation]
+    RAG --> UI
+```
+
+### Source Modules
+
+- `src/config.py` - Environment configuration
+- `src/sec_client.py` - SEC EDGAR requests and filing downloads
+- `src/parser.py` - HTML cleaning, chunking, and section classification
+- `src/embeddings.py` - OpenAI embedding generation
+- `src/vector_store.py` - ChromaDB storage and semantic retrieval
+- `src/rag.py` - Source-grounded answer generation
+- `src/ingestion.py` - Filing ingestion orchestration
+- `app.py` - Streamlit user interface

@@ -25,7 +25,6 @@ import re
 import time
 from typing import Dict, List, Tuple
 
-import chromadb
 import requests
 import streamlit as st
 from bs4 import BeautifulSoup
@@ -33,6 +32,7 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from src.parser import SECTION_OPTIONS, chunk_text, clean_text, detect_section
 from src.embeddings import get_embedding, get_embeddings_batch
+from src.vector_store import retrieve_context, upsert_chunks
 
 from src.config import (
     OPENAI_API_KEY,
@@ -47,8 +47,6 @@ if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")
 
 client = OpenAI(api_key=OPENAI_API_KEY)
-chroma_client = chromadb.PersistentClient(path="./chroma_db")
-collection = chroma_client.get_or_create_collection(name="sec_10k_filings_v2")
 
 def ingest_10k(ticker: str) -> int:
     """Download, chunk, classify, embed, and store a company's latest 10-K."""
@@ -85,7 +83,7 @@ def ingest_10k(ticker: str) -> int:
         batch = documents[start : start + batch_size]
         embeddings.extend(get_embeddings_batch(batch))
 
-    collection.upsert(
+    upsert_chunks(
         ids=ids,
         documents=documents,
         embeddings=embeddings,
@@ -93,40 +91,6 @@ def ingest_10k(ticker: str) -> int:
     )
 
     return len(chunks)
-
-def build_where_filter(ticker: str, selected_section: str) -> Dict:
-    """Build ChromaDB metadata filter."""
-    if selected_section == "All Sections":
-        return {"ticker": ticker}
-
-    return {
-        "$and": [
-            {"ticker": ticker},
-            {"section_name": selected_section},
-        ]
-    }
-
-
-def retrieve_context(question: str, ticker: str, selected_section: str, top_k: int = 5) -> List[Dict]:
-    question_embedding = get_embedding(question)
-    where_filter = build_where_filter(ticker, selected_section)
-
-    results = collection.query(
-        query_embeddings=[question_embedding],
-        n_results=top_k,
-        where=where_filter,
-    )
-
-    contexts = []
-    docs = results.get("documents", [[]])[0]
-    metas = results.get("metadatas", [[]])[0]
-    distances = results.get("distances", [[]])[0]
-
-    for doc, meta, distance in zip(docs, metas, distances):
-        contexts.append({"text": doc, "metadata": meta, "distance": distance})
-
-    return contexts
-
 
 def generate_answer(question: str, contexts: List[Dict], selected_section: str) -> str:
     context_block = "\n\n".join(

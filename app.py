@@ -39,34 +39,14 @@ from src.config import (
     CHAT_MODEL,
 )
 
+from src.sec_client import COMPANIES, download_filing_html
+
 if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")
 
 client = OpenAI(api_key=OPENAI_API_KEY)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(name="sec_10k_filings_v2")
-
-HEADERS = {
-    "User-Agent": SEC_USER_AGENT,
-    "Accept-Encoding": "gzip, deflate",
-    "Host": "data.sec.gov",
-}
-
-ARCHIVES_HEADERS = {
-    "User-Agent": SEC_USER_AGENT,
-    "Accept-Encoding": "gzip, deflate",
-}
-
-COMPANIES: Dict[str, str] = {
-    "AAPL": "0000320193",
-    "MSFT": "0000789019",
-    "NVDA": "0001045810",
-    "AMZN": "0001018724",
-    "TSLA": "0001318605",
-    "JPM": "0000019617",
-    "UNH": "0000731766",
-    "WMT": "0000104169",
-}
 
 SECTION_OPTIONS = [
     "All Sections",
@@ -77,7 +57,6 @@ SECTION_OPTIONS = [
     "Legal / Regulatory",
     "Financial Risks",
 ]
-
 
 def clean_text(raw_html: str) -> str:
     """Convert SEC filing HTML into readable text."""
@@ -194,7 +173,6 @@ def get_embedding(text: str) -> List[float]:
     )
     return response.data[0].embedding
 
-
 def get_embeddings_batch(texts: List[str]) -> List[List[float]]:
     response = client.embeddings.create(
         model=EMBEDDING_MODEL,
@@ -202,55 +180,10 @@ def get_embeddings_batch(texts: List[str]) -> List[List[float]]:
     )
     return [item.embedding for item in response.data]
 
-
-def fetch_latest_10k_metadata(ticker: str) -> Tuple[str, str, str, str]:
-    """Return accession number, primary document, filing date, and filing URL."""
-    cik = COMPANIES[ticker]
-    submissions_url = f"https://data.sec.gov/submissions/CIK{cik}.json"
-
-    response = requests.get(submissions_url, headers=HEADERS, timeout=30)
-    response.raise_for_status()
-    data = response.json()
-
-    recent = data["filings"]["recent"]
-    forms = recent["form"]
-
-    for idx, form in enumerate(forms):
-        if form == "10-K":
-            accession = recent["accessionNumber"][idx]
-            primary_doc = recent["primaryDocument"][idx]
-            filing_date = recent["filingDate"][idx]
-            accession_no_dashes = accession.replace("-", "")
-            filing_url = (
-                f"https://www.sec.gov/Archives/edgar/data/"
-                f"{int(cik)}/{accession_no_dashes}/{primary_doc}"
-            )
-            return accession, primary_doc, filing_date, filing_url
-
-    raise ValueError(f"No 10-K filing found for {ticker}.")
-
-
-def download_filing_text(ticker: str) -> Dict[str, str]:
-    accession, primary_doc, filing_date, filing_url = fetch_latest_10k_metadata(ticker)
-    time.sleep(0.2)
-
-    response = requests.get(filing_url, headers=ARCHIVES_HEADERS, timeout=60)
-    response.raise_for_status()
-
-    return {
-        "ticker": ticker,
-        "cik": COMPANIES[ticker],
-        "accession": accession,
-        "primary_doc": primary_doc,
-        "filing_date": filing_date,
-        "source_url": filing_url,
-        "text": clean_text(response.text),
-    }
-
-
 def ingest_10k(ticker: str) -> int:
     """Download, chunk, classify, embed, and store a company's latest 10-K."""
-    filing = download_filing_text(ticker)
+    filing = download_filing_html(ticker)
+    filing["text"] = clean_text(filing["html"])
     chunks = chunk_text(filing["text"])
 
     ids = []
@@ -277,6 +210,7 @@ def ingest_10k(ticker: str) -> int:
 
     embeddings = []
     batch_size = 64
+
     for start in range(0, len(documents), batch_size):
         batch = documents[start : start + batch_size]
         embeddings.extend(get_embeddings_batch(batch))
@@ -289,7 +223,6 @@ def ingest_10k(ticker: str) -> int:
     )
 
     return len(chunks)
-
 
 def build_where_filter(ticker: str, selected_section: str) -> Dict:
     """Build ChromaDB metadata filter."""

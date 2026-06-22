@@ -34,6 +34,7 @@ from src.embeddings import get_embedding, get_embeddings_batch
 from src.vector_store import retrieve_context, upsert_chunks
 from src.rag import generate_answer
 from src.config import OPENAI_API_KEY
+from src.ingestion import ingest_10k
 
 from src.config import (
     OPENAI_API_KEY,
@@ -46,76 +47,6 @@ from src.sec_client import COMPANIES, download_filing_html
 
 if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")
-
-def ingest_10k(ticker: str) -> int:
-    """Download, chunk, classify, embed, and store a company's latest 10-K."""
-    filing = download_filing_html(ticker)
-    filing["text"] = clean_text(filing["html"])
-    chunks = chunk_text(filing["text"])
-
-    ids = []
-    documents = []
-    metadatas = []
-
-    for i, chunk in enumerate(chunks):
-        section_name = detect_section(chunk)
-        chunk_id = f"v2_{ticker}_{filing['accession']}_{i}"
-
-        ids.append(chunk_id)
-        documents.append(chunk)
-        metadatas.append(
-            {
-                "ticker": ticker,
-                "cik": filing["cik"],
-                "accession": filing["accession"],
-                "filing_date": filing["filing_date"],
-                "source_url": filing["source_url"],
-                "chunk_number": i,
-                "section_name": section_name,
-            }
-        )
-
-    embeddings = []
-    batch_size = 64
-
-    for start in range(0, len(documents), batch_size):
-        batch = documents[start : start + batch_size]
-        embeddings.extend(get_embeddings_batch(batch))
-
-    upsert_chunks(
-        ids=ids,
-        documents=documents,
-        embeddings=embeddings,
-        metadatas=metadatas,
-    )
-
-    return len(chunks)
-
-    prompt = f"""
-You are a careful financial document assistant. Answer the user's question using only the provided SEC 10-K context.
-
-Selected section filter: {selected_section}
-
-Rules:
-- Do not invent facts.
-- If the answer is not in the context, say that the filing context provided does not contain enough information.
-- Keep the answer business-friendly and concise.
-- Include source references like [Source 1], [Source 2] when supporting claims.
-- If a section filter is selected, focus your answer on that section.
-
-User question:
-{question}
-
-SEC 10-K context:
-{context_block}
-"""
-
-    response = client.responses.create(
-        model=CHAT_MODEL,
-        input=prompt,
-    )
-    return response.output_text
-
 
 st.set_page_config(page_title="SEC 10-K Intelligence Assistant V2", layout="wide")
 
@@ -180,18 +111,18 @@ if st.button("Ask") and question:
             st.error(f"Question answering failed: {exc}")
 
 st.divider()
+
 st.markdown(
     """
-### Version 2 Features Included
-- Downloads latest public 10-K filing from SEC EDGAR
-- Parses filing HTML into text
-- Splits text into chunks
-- Tags chunks with lightweight section metadata
+### Version 3 Features Included
+- Downloads the latest public 10-K filing from SEC EDGAR
+- Parses and splits filing content into searchable chunks
+- Tags chunks with section metadata
 - Creates OpenAI embeddings
-- Stores chunks in local ChromaDB
-- Adds section filter dropdown
-- Retrieves relevant chunks by semantic similarity and metadata filter
+- Stores and retrieves chunks using ChromaDB
 - Generates source-grounded answers
+- Uses modular configuration, SEC client, parsing, embedding, vector-store, RAG, and ingestion components
+- Includes Docker preparation and evaluation questions
 
 ### Section Filters
 - All Sections
@@ -203,11 +134,10 @@ st.markdown(
 - Financial Risks
 
 ### Next Version Ideas
-- Add formal SEC Item parsing: Item 1, Item 1A, Item 7, Item 7A, Item 8
+- Add formal SEC Item parsing
 - Add company comparison mode
 - Add PostgreSQL metadata storage
-- Add Docker deployment
-- Add AWS S3 for raw filing storage
-- Add evaluation metrics for retrieval quality
+- Add AWS S3 raw-filing storage
+- Add automated retrieval evaluation
 """
 )

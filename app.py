@@ -32,6 +32,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from openai import OpenAI
 from src.parser import SECTION_OPTIONS, chunk_text, clean_text, detect_section
+from src.embeddings import get_embedding, get_embeddings_batch
 
 from src.config import (
     OPENAI_API_KEY,
@@ -48,20 +49,6 @@ if not OPENAI_API_KEY:
 client = OpenAI(api_key=OPENAI_API_KEY)
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(name="sec_10k_filings_v2")
-
-def get_embedding(text: str) -> List[float]:
-    response = client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=text,
-    )
-    return response.data[0].embedding
-
-def get_embeddings_batch(texts: List[str]) -> List[List[float]]:
-    response = client.embeddings.create(
-        model=EMBEDDING_MODEL,
-        input=texts,
-    )
-    return [item.embedding for item in response.data]
 
 def ingest_10k(ticker: str) -> int:
     """Download, chunk, classify, embed, and store a company's latest 10-K."""

@@ -146,3 +146,5 @@ Build the Docker image:
 
 ```powershell
 docker build -t sec-10k-rag-assistant:v3 .
+
+Version 4 adds Company Comparison Mode, allowing users to compare two public companies across selected SEC 10-K sections with source-grounded answers and retrieved source chunks for each company.

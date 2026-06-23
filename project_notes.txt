@@ -65,3 +65,13 @@ Built Docker image sec-10k-rag-assistant:v3 and successfully ran the Streamlit a
 Status:
 Version 3 Docker setup verified successfully.
 
+Version 4 Completed:
+- Added Company Comparison Mode in the Streamlit UI.
+- Added separate Single Company Q&A and Company Comparison tabs.
+- Enabled comparison between two selected companies using SEC 10-K filings.
+- Reused section-level filters for comparison across Risk Factors, Cybersecurity, Competition, Legal / Regulatory, Financial Risks, and Business.
+- Added comparison answer generation in src/rag.py.
+- Displayed retrieved sources separately for Company A and Company B.
+- Tested comparison mode with risk factors, cybersecurity, and competition questions.
+- Added Version 4 comparison screenshots.
+

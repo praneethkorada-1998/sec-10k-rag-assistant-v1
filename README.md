@@ -145,6 +145,21 @@ flowchart TD
 Build the Docker image:
 
 ```powershell
-docker build -t sec-10k-rag-assistant:v3 .
+docker build -t sec-10k-rag-assistant:v4 .
+```
+
+Run the app in Docker:
+
+```powershell
+docker run --rm -p 8501:8501 --env-file .env sec-10k-rag-assistant:v4
+```
+
+Open the app:
+
+```text
+http://localhost:8501
+```
+
+## Version 4: Company Comparison Mode
 
 Version 4 adds Company Comparison Mode, allowing users to compare two public companies across selected SEC 10-K sections with source-grounded answers and retrieved source chunks for each company.

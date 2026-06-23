@@ -1,115 +1,98 @@
-\# SEC 10-K Intelligence Assistant
+# SEC 10-K Intelligence Assistant
 
 
 
-\## Project Overview
+## Project Overview
 
 This project is a RAG-based financial document intelligence assistant built using public SEC EDGAR 10-K filings. The app allows users to select a company, download its latest 10-K filing, index the document using embeddings, and ask natural language questions about business risks, cybersecurity, legal risks, competition, and company operations.
 
 
 
-\## Problem Statement
+## Problem Statement
 
 SEC 10-K filings are long and difficult to review manually. Analysts, business users, and compliance teams often need quick answers from these filings. This project demonstrates how GenAI and RAG can help retrieve relevant filing sections and generate source-grounded answers.
 
 
 
-\## Tools Used
+## Tools Used
 
-\- Python
-
-\- Streamlit
-
-\- ChromaDB
-
-\- OpenAI Embeddings
-
-\- OpenAI Chat Model
-
-\- SEC EDGAR API
-
-\- BeautifulSoup
-
-\- dotenv
+- Python
+- Streamlit
+- ChromaDB
+- OpenAI Embeddings
+- OpenAI Chat Model
+- SEC EDGAR API
+- BeautifulSoup
+- Docker
+- python-dotenv
 
 
+## Key Features
 
-\## Key Features
-
-\- Downloads latest public SEC 10-K filings
-
-\- Parses and cleans filing text
-
-\- Splits long filings into chunks
-
-\- Creates vector embeddings
-
-\- Stores document chunks in ChromaDB
-
-\- Retrieves relevant chunks using semantic search
-
-\- Generates source-grounded answers
-
-\- Displays retrieved source chunks for explainability
+- Downloads latest public SEC 10-K filings from SEC EDGAR
+- Parses and cleans SEC filing HTML
+- Splits long filings into searchable chunks
+- Creates OpenAI embeddings for filing chunks
+- Stores document chunks and metadata in ChromaDB
+- Retrieves relevant chunks using semantic search
+- Applies section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks
+- Generates source-grounded answers with retrieved source chunks
+- Adds Company Comparison Mode for comparing two public companies
+- Displays retrieved sources separately for single-company and comparison workflows
+- Runs locally with Streamlit or through Docker
 
 
+## Sample Questions Tested
 
-\## Sample Questions Tested
-
-\- What are the company's main risk factors?
-
-\- What are the company's top 5 risk factors?
-
-\- Summarize the business model in simple terms.
-
-\- What does the company say about cybersecurity?
-
-\- What are the major legal and regulatory risks?
-
-\- What does the company say about competition?
+- What are the company's main risk factors?
+- What are the company's top 5 risk factors?
+- Summarize the business model in simple terms.
+- What does the company say about cybersecurity?
+- What are the major legal and regulatory risks?
+- What does the company say about competition?
 
 
+## Comparison Questions Tested
 
-\## Current Status
-
-MVP completed and tested locally using Streamlit.
-
-
-
-\## Next Improvements
-
-\- Add section filters for Business, Risk Factors, MD\&A, Cybersecurity, and Legal Proceedings
-
-\- Add company comparison mode
-
-\- Add PostgreSQL metadata storage
-
-\- Add Docker deployment
-
-\- Add AWS S3 storage for raw filings
-
-\- Add GitHub Actions for CI/CD
+- Compare the main risk factors between two companies.
+- How do these companies describe cybersecurity risks differently?
+- Compare the competitive pressures discussed by both companies.
+- What legal or regulatory risks are similar across both filings?
+- Which company appears more exposed to financial risk based on the retrieved sections?
 
 
+## Current Status
 
-\## Security Note
+Version 4 completed and pushed to GitHub. The app supports single-company SEC 10-K question answering, section-filtered retrieval, company comparison mode, modular source code, Docker-based execution, and project screenshots.
+
+## Next Improvements
+
+- Add formal SEC Item parsing for Item 1, Item 1A, Item 7, and Item 7A
+- Add PostgreSQL metadata storage for ticker, CIK, filing date, accession number, and ingestion status
+- Add AWS S3 storage for raw filing documents
+- Add automated retrieval evaluation metrics
+- Add GitHub Actions for CI/CD checks
+- Add cloud deployment using Streamlit Community Cloud, Render, Azure Container Apps, or AWS ECS
+
+
+## Security Note
 
 The `.env` file is not included in GitHub because it contains private API credentials.
 
 ## Version Updates
 
-### Version 1: RAG MVP
+**Version 1:** RAG MVP
 - Built a Streamlit-based SEC 10-K Intelligence Assistant
 - Added public SEC EDGAR 10-K filing ingestion
 - Added document parsing, chunking, OpenAI embeddings, ChromaDB vector storage, semantic retrieval, and source-grounded answer generation
 
-### Version 2: Section Filters
+**Version 2:** Section Filters
 - Added section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks
 - Added lightweight section tagging for SEC 10-K chunks
 - Improved targeted retrieval using ticker and section metadata
 - Updated retrieved source display to show section names
 
-### Version 3: Docker and Evaluation Preparation
+**Version 3:** Docker and Evaluation Preparation
 - Added Dockerfile for containerized Streamlit app execution
 - Added .dockerignore to prevent secrets, local vector database files, cache files, and screenshots from being copied into Docker images
 - Added evaluation_questions.md to manually test retrieval quality across key SEC 10-K sections
@@ -160,6 +143,6 @@ Open the app:
 http://localhost:8501
 ```
 
-## Version 4: Company Comparison Mode
+**Version 4:** Company Comparison Mode
 
 Version 4 adds Company Comparison Mode, allowing users to compare two public companies across selected SEC 10-K sections with source-grounded answers and retrieved source chunks for each company.

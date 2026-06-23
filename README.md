@@ -139,3 +139,10 @@ flowchart TD
 - `src/rag.py` - Source-grounded answer generation
 - `src/ingestion.py` - Filing ingestion orchestration
 - `app.py` - Streamlit user interface
+
+## Docker Run
+
+Build the Docker image:
+
+```powershell
+docker build -t sec-10k-rag-assistant:v3 .

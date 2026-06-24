@@ -146,3 +146,24 @@ http://localhost:8501
 **Version 4:** Company Comparison Mode
 
 Version 4 adds Company Comparison Mode, allowing users to compare two public companies across selected SEC 10-K sections with source-grounded answers and retrieved source chunks for each company.
+
+
+**Version 5:** Automated Retrieval Evaluation
+
+Version 5 adds an automated evaluation pipeline for measuring whether semantic retrieval returns chunks from the expected SEC 10-K sections.
+
+### Evaluation Metrics
+
+- Evaluation questions: 12
+- Hit Rate@5: 91.7%
+- Hit Rate@10: 100%
+- Mean Reciprocal Rank: 0.600
+
+### Run Evaluation
+
+The selected company must already be indexed in ChromaDB.
+
+```powershell
+py run_evaluation.py --ticker AAPL --top-k 10 
+
+evaluation_results/ 

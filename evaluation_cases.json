@@ -1,0 +1,62 @@
+[
+  {
+    "id": "risk_factors_1",
+    "question": "What are the company's main risk factors?",
+    "expected_section": "Risk Factors"
+  },
+  {
+    "id": "risk_factors_2",
+    "question": "What events could materially and adversely affect the company?",
+    "expected_section": "Risk Factors"
+  },
+  {
+    "id": "business_1",
+    "question": "Summarize the company's business model and operations.",
+    "expected_section": "Business"
+  },
+  {
+    "id": "business_2",
+    "question": "What products, services, customers, or operating segments are described?",
+    "expected_section": "Business"
+  },
+  {
+    "id": "cybersecurity_1",
+    "question": "What does the company say about cybersecurity?",
+    "expected_section": "Cybersecurity"
+  },
+  {
+    "id": "cybersecurity_2",
+    "question": "What information security, data breach, or ransomware risks are mentioned?",
+    "expected_section": "Cybersecurity"
+  },
+  {
+    "id": "competition_1",
+    "question": "What competitive pressures does the company face?",
+    "expected_section": "Competition"
+  },
+  {
+    "id": "competition_2",
+    "question": "Who does the company compete with and what affects its market position?",
+    "expected_section": "Competition"
+  },
+  {
+    "id": "legal_1",
+    "question": "What are the company's major legal and regulatory risks?",
+    "expected_section": "Legal / Regulatory"
+  },
+  {
+    "id": "legal_2",
+    "question": "What compliance, litigation, or government investigation risks are discussed?",
+    "expected_section": "Legal / Regulatory"
+  },
+  {
+    "id": "financial_1",
+    "question": "What financial risks are described in the filing?",
+    "expected_section": "Financial Risks"
+  },
+  {
+    "id": "financial_2",
+    "question": "What liquidity, cash flow, interest rate, credit, or market risks are discussed?",
+    "expected_section": "Financial Risks"
+  }
+]

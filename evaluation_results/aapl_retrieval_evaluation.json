@@ -1,0 +1,240 @@
+{
+  "ticker": "AAPL",
+  "top_k": 10,
+  "evaluated_at_utc": "2026-06-24T15:25:14.317470+00:00",
+  "case_count": 12,
+  "metrics": {
+    "hit_rate_at_10": 1.0,
+    "mean_reciprocal_rank": 0.6
+  },
+  "results": [
+    {
+      "id": "risk_factors_1",
+      "question": "What are the company's main risk factors?",
+      "expected_section": "Risk Factors",
+      "retrieved_sections": [
+        "Cybersecurity",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Financial Risks",
+        "Cybersecurity",
+        "Risk Factors",
+        "Legal / Regulatory",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Risk Factors"
+      ],
+      "first_relevant_rank": 6,
+      "hit": true
+    },
+    {
+      "id": "risk_factors_2",
+      "question": "What events could materially and adversely affect the company?",
+      "expected_section": "Risk Factors",
+      "retrieved_sections": [
+        "Risk Factors",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Competition",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Competition",
+        "Risk Factors"
+      ],
+      "first_relevant_rank": 1,
+      "hit": true
+    },
+    {
+      "id": "business_1",
+      "question": "Summarize the company's business model and operations.",
+      "expected_section": "Business",
+      "retrieved_sections": [
+        "Competition",
+        "Competition",
+        "Competition",
+        "Risk Factors",
+        "Business",
+        "Legal / Regulatory",
+        "Financial Risks",
+        "Financial Risks",
+        "Legal / Regulatory",
+        "Risk Factors"
+      ],
+      "first_relevant_rank": 5,
+      "hit": true
+    },
+    {
+      "id": "business_2",
+      "question": "What products, services, customers, or operating segments are described?",
+      "expected_section": "Business",
+      "retrieved_sections": [
+        "Competition",
+        "Business",
+        "Competition",
+        "Financial Risks",
+        "Financial Risks",
+        "Risk Factors",
+        "Business",
+        "Competition",
+        "Legal / Regulatory",
+        "Legal / Regulatory"
+      ],
+      "first_relevant_rank": 2,
+      "hit": true
+    },
+    {
+      "id": "cybersecurity_1",
+      "question": "What does the company say about cybersecurity?",
+      "expected_section": "Cybersecurity",
+      "retrieved_sections": [
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Legal / Regulatory",
+        "Competition",
+        "Risk Factors",
+        "Cybersecurity"
+      ],
+      "first_relevant_rank": 1,
+      "hit": true
+    },
+    {
+      "id": "cybersecurity_2",
+      "question": "What information security, data breach, or ransomware risks are mentioned?",
+      "expected_section": "Cybersecurity",
+      "retrieved_sections": [
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity"
+      ],
+      "first_relevant_rank": 1,
+      "hit": true
+    },
+    {
+      "id": "competition_1",
+      "question": "What competitive pressures does the company face?",
+      "expected_section": "Competition",
+      "retrieved_sections": [
+        "Legal / Regulatory",
+        "Competition",
+        "Competition",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Risk Factors",
+        "Risk Factors",
+        "Competition"
+      ],
+      "first_relevant_rank": 2,
+      "hit": true
+    },
+    {
+      "id": "competition_2",
+      "question": "Who does the company compete with and what affects its market position?",
+      "expected_section": "Competition",
+      "retrieved_sections": [
+        "Competition",
+        "Legal / Regulatory",
+        "Competition",
+        "Legal / Regulatory",
+        "Legal / Regulatory",
+        "Competition",
+        "Legal / Regulatory",
+        "Legal / Regulatory",
+        "Competition",
+        "Competition"
+      ],
+      "first_relevant_rank": 1,
+      "hit": true
+    },
+    {
+      "id": "legal_1",
+      "question": "What are the company's major legal and regulatory risks?",
+      "expected_section": "Legal / Regulatory",
+      "retrieved_sections": [
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Risk Factors",
+        "Financial Risks",
+        "Legal / Regulatory",
+        "Risk Factors"
+      ],
+      "first_relevant_rank": 4,
+      "hit": true
+    },
+    {
+      "id": "legal_2",
+      "question": "What compliance, litigation, or government investigation risks are discussed?",
+      "expected_section": "Legal / Regulatory",
+      "retrieved_sections": [
+        "Cybersecurity",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Risk Factors",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity"
+      ],
+      "first_relevant_rank": 3,
+      "hit": true
+    },
+    {
+      "id": "financial_1",
+      "question": "What financial risks are described in the filing?",
+      "expected_section": "Financial Risks",
+      "retrieved_sections": [
+        "Risk Factors",
+        "Cybersecurity",
+        "Risk Factors",
+        "Financial Risks",
+        "Risk Factors",
+        "Cybersecurity",
+        "Legal / Regulatory",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Cybersecurity"
+      ],
+      "first_relevant_rank": 4,
+      "hit": true
+    },
+    {
+      "id": "financial_2",
+      "question": "What liquidity, cash flow, interest rate, credit, or market risks are discussed?",
+      "expected_section": "Financial Risks",
+      "retrieved_sections": [
+        "Financial Risks",
+        "Risk Factors",
+        "Financial Risks",
+        "Financial Risks",
+        "Risk Factors",
+        "Competition",
+        "Cybersecurity",
+        "Cybersecurity",
+        "Risk Factors",
+        "Financial Risks"
+      ],
+      "first_relevant_rank": 1,
+      "hit": true
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 Project Name:
-SEC 10-K Intelligence Assistant
+SEC Filing Intelligence Platform
 
 Project Summary:
 Built a RAG-based financial document intelligence app using public SEC EDGAR 10-K filings. The system downloads a company’s latest 10-K, parses and chunks the filing text, generates OpenAI embeddings, stores vectors in ChromaDB, retrieves relevant document chunks, and generates source-grounded answers through a Streamlit interface.
@@ -74,6 +74,19 @@ Version 4 Completed:
 - Displayed retrieved sources separately for Company A and Company B.
 - Tested comparison mode with risk factors, cybersecurity, and competition questions.
 - Added Version 4 comparison screenshots.
+
+Version 5 Completed:
+- Added automated retrieval evaluation pipeline.
+- Created evaluation_cases.json with 12 section-based evaluation questions.
+- Added run_evaluation.py command-line runner.
+- Added src/evaluation.py for retrieval scoring.
+- Measured retrieval performance using Hit Rate@K and Mean Reciprocal Rank.
+- Achieved Hit Rate@5 of 91.7%.
+- Achieved Hit Rate@10 of 100%.
+- Achieved Mean Reciprocal Rank of 0.600.
+- Generated JSON and Markdown evaluation reports in evaluation_results/.
+- Added GitHub Actions CI validation for Python syntax and evaluation JSON.
+- Added V5 screenshots for retrieval evaluation results and CI success.
 
 Version 6 Completed:
 - Added formal SEC Item parsing for official 10-K sections.

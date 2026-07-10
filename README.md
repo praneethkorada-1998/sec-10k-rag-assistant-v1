@@ -1,11 +1,9 @@
-# SEC 10-K Intelligence Assistant
-
+# SEC Filing Intelligence Platform
 
 
 ## Project Overview
 
-This project is a RAG-based financial document intelligence assistant built using public SEC EDGAR 10-K filings. The app allows users to select a company, download its latest 10-K filing, index the document using embeddings, and ask natural language questions about business risks, cybersecurity, legal risks, competition, and company operations.
-
+This project is a data-engineered RAG-based financial document intelligence platform built using public SEC EDGAR 10-K filings.
 
 
 ## Problem Statement

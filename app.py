@@ -34,13 +34,13 @@ if not OPENAI_API_KEY:
     st.warning("Please set OPENAI_API_KEY in your environment or .env file.")
 
 st.set_page_config(
-    page_title="SEC 10-K Intelligence Assistant V4",
+    page_title="SEC Filing Intelligence Platform ",
     layout="wide",
 )
 
-st.title("SEC 10-K Intelligence Assistant - V4")
+st.title("SEC Filing Intelligence Platform")
 st.caption(
-    "Modular SEC filing ingestion, semantic retrieval, source-grounded answers, and company comparison"
+    "Data-engineered SEC filing ingestion, formal item parsing, semantic retrieval, source-grounded answers, and company comparison"
 )
 
 with st.sidebar:

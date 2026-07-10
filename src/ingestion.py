@@ -1,22 +1,24 @@
 from src.embeddings import get_embeddings_batch
-from src.parser import chunk_text, clean_text, detect_section
+from src.parser import chunk_text_with_sec_items, clean_text
 from src.sec_client import download_filing_html
 from src.vector_store import upsert_chunks
 
 
 def ingest_10k(ticker: str) -> int:
-    """Download, process, embed, and store the latest 10-K."""
+    """Download, process, embed, and store the latest 10-K with SEC item metadata."""
     filing = download_filing_html(ticker)
     filing["text"] = clean_text(filing["html"])
-    chunks = chunk_text(filing["text"])
+
+    chunk_records = chunk_text_with_sec_items(filing["text"])
 
     ids = []
     documents = []
     metadatas = []
 
-    for index, chunk in enumerate(chunks):
-        section_name = detect_section(chunk)
-        chunk_id = f"v2_{ticker}_{filing['accession']}_{index}"
+    for index, record in enumerate(chunk_records):
+        chunk, section_name, item_number = record
+
+        chunk_id = f"v6_items_{ticker}_{filing['accession']}_{index}"
 
         ids.append(chunk_id)
         documents.append(chunk)
@@ -29,6 +31,7 @@ def ingest_10k(ticker: str) -> int:
                 "source_url": filing["source_url"],
                 "chunk_number": index,
                 "section_name": section_name,
+                "sec_item": item_number,
             }
         )
 
@@ -46,4 +49,4 @@ def ingest_10k(ticker: str) -> int:
         metadatas=metadatas,
     )
 
-    return len(chunks)
+    return len(documents)

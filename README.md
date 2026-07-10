@@ -167,3 +167,26 @@ The selected company must already be indexed in ChromaDB.
 py run_evaluation.py --ticker AAPL --top-k 10 
 
 evaluation_results/ 
+
+**Version 6:** Formal SEC Item Parsing
+
+Version 6 replaces lightweight keyword-based section tagging with formal SEC 10-K item parsing.
+
+The app now extracts and tags official filing sections including:
+
+- Item 1 - Business
+- Item 1A - Risk Factors
+- Item 1C - Cybersecurity
+- Item 3 - Legal Proceedings
+- Item 7 - MD&A
+- Item 7A - Market Risk
+- Item 8 - Financial Statements
+
+This improves section-filtered retrieval accuracy by storing official SEC item metadata in ChromaDB instead of relying only on keyword detection.
+
+### V6 Validation
+
+- Confirmed parser extraction for AAPL official 10-K sections
+- Confirmed ChromaDB metadata storage with `sec_item`
+- Confirmed retrieval for `Item 1A - Risk Factors`
+- Confirmed retrieval for `Item 1C - Cybersecurity`

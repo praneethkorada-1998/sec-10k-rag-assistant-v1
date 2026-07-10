@@ -7,9 +7,8 @@ from src.embeddings import get_embedding
 
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
 collection = chroma_client.get_or_create_collection(
-    name="sec_10k_filings_v2"
+    name="sec_10k_filings_v6_items"
 )
-
 
 def upsert_chunks(
     ids: List[str],

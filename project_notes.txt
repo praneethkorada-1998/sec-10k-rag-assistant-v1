@@ -75,3 +75,12 @@ Version 4 Completed:
 - Tested comparison mode with risk factors, cybersecurity, and competition questions.
 - Added Version 4 comparison screenshots.
 
+Version 6 Completed:
+- Added formal SEC Item parsing for official 10-K sections.
+- Extracted and tagged Item 1 - Business, Item 1A - Risk Factors, Item 1C - Cybersecurity, Item 3 - Legal Proceedings, Item 7 - MD&A, Item 7A - Market Risk, and Item 8 - Financial Statements.
+- Updated ingestion to store official SEC item metadata in ChromaDB.
+- Created a clean V6 ChromaDB collection for SEC-item-based retrieval.
+- Validated parser output using debug_sec_items.py.
+- Validated ChromaDB metadata using debug_chroma_v6.py.
+- Confirmed section-filtered retrieval for Item 1A - Risk Factors and Item 1C - Cybersecurity.
+- Added V6 screenshots for official SEC item retrieval.

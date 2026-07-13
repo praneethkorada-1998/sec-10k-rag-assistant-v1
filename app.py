@@ -246,40 +246,26 @@ st.divider()
 
 st.markdown(
     """
-### Version 4 Features Included
-- Downloads the latest public 10-K filing from SEC EDGAR
-- Parses and splits filing content into searchable chunks
-- Tags chunks with section metadata
-- Creates OpenAI embeddings
-- Stores and retrieves chunks using ChromaDB
-- Generates source-grounded single-company answers
-- Adds company comparison mode
-- Compares two companies across selected 10-K sections
-- Displays retrieved sources separately for each company
-- Uses modular configuration, SEC client, parsing, embedding, vector-store, RAG, and ingestion components
-- Includes Docker preparation and evaluation questions
+### Platform Features Included
 
-### Section Filters
-- All Sections
-- Business
-- Risk Factors
-- Cybersecurity
-- Competition
-- Legal / Regulatory
-- Financial Risks
+- Downloads latest public SEC 10-K filings from SEC EDGAR
+- Performs formal SEC item parsing for official 10-K sections
+- Extracts Item 1, Item 1A, Item 1C, Item 3, Item 7, Item 7A, and Item 8
+- Creates searchable chunks and OpenAI embeddings
+- Stores chunks and embeddings in ChromaDB for semantic search
+- Stores structured filing and chunk metadata in PostgreSQL
+- Applies metadata-filtered retrieval by official SEC section
+- Generates source-grounded answers with retrieved sources
+- Compares two companies across selected SEC filing sections
+- Provides a PostgreSQL Metadata Dashboard
+- Supports Docker, Docker Compose, and GitHub Actions validation
 
-### Strong Comparison Examples
-- Compare the main risk factors between these two companies.
-- How do these companies describe cybersecurity risks differently?
-- Compare the competitive pressures discussed by both companies.
-- What legal or regulatory risks are similar across both filings?
-- Which company appears more exposed to financial risk based on the retrieved sections?
+### Current Version
 
-### Next Version Ideas
-- Add formal SEC Item parsing
-- Add PostgreSQL metadata storage
-- Add AWS S3 raw-filing storage
-- Add automated retrieval evaluation
-- Add cloud deployment
+Version 7 completed with formal SEC item parsing, company comparison, retrieval evaluation, GitHub Actions CI, PostgreSQL metadata storage, and a Streamlit Metadata Dashboard.
+
+### Next Version
+
+Version 8 will add batch ingestion for multiple companies.
 """
 )

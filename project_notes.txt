@@ -1,13 +1,63 @@
 Project Name:
 SEC Filing Intelligence Platform
 
+GitHub Repository:
+https://github.com/praneethkorada-1998/sec-10k-rag-assistant-v1
+
 Project Summary:
-Built a RAG-based financial document intelligence app using public SEC EDGAR 10-K filings. The system downloads a company’s latest 10-K, parses and chunks the filing text, generates OpenAI embeddings, stores vectors in ChromaDB, retrieves relevant document chunks, and generates source-grounded answers through a Streamlit interface.
+Built a data-engineered RAG-based financial document intelligence platform using public SEC EDGAR 10-K filings. The platform downloads a company’s latest 10-K filing, parses and cleans the filing HTML, performs formal SEC item parsing, chunks official filing sections, generates OpenAI embeddings, stores vectors in ChromaDB, stores structured metadata in PostgreSQL, retrieves relevant document chunks, generates source-grounded answers, compares companies, and displays filing metadata through a Streamlit interface.
+
+Problem Statement:
+SEC 10-K filings are long, complex, and difficult to review manually. Analysts, business users, compliance teams, legal teams, and research teams often need quick answers from official filing sections such as Risk Factors, Cybersecurity, MD&A, Legal Proceedings, and Financial Statements. This project demonstrates how data engineering, GenAI, RAG, vector search, metadata filtering, and structured metadata storage can make SEC filings easier to search, compare, evaluate, and analyze.
 
 Tools Used:
-Python, Streamlit, ChromaDB, OpenAI Embeddings, OpenAI Chat Model, SEC EDGAR API, BeautifulSoup, dotenv
+- Python
+- Streamlit
+- ChromaDB
+- PostgreSQL
+- Docker
+- Docker Compose
+- OpenAI Embeddings
+- OpenAI Chat Model
+- SEC EDGAR API
+- BeautifulSoup
+- GitHub Actions
+- psycopg2-binary
+- python-dotenv
 
-Tested Questions:
+Core Architecture:
+- Streamlit provides the user interface.
+- SEC EDGAR API provides public 10-K filing data.
+- BeautifulSoup cleans and parses filing HTML.
+- Formal SEC item parser extracts official filing sections.
+- OpenAI embeddings convert filing chunks into vector representations.
+- ChromaDB stores document chunks and embeddings for semantic search.
+- PostgreSQL stores structured filing and chunk metadata.
+- RAG layer generates source-grounded answers using retrieved filing chunks.
+- GitHub Actions validates Python syntax and evaluation JSON.
+- Docker and Docker Compose support repeatable local execution.
+
+Current Status:
+Version 7 completed and pushed to GitHub. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, and a Streamlit Metadata Dashboard.
+
+Key Features:
+- Downloads latest public SEC 10-K filings from SEC EDGAR.
+- Parses and cleans SEC filing HTML.
+- Performs formal SEC item parsing for official 10-K sections.
+- Extracts Item 1, Item 1A, Item 1C, Item 3, Item 7, Item 7A, and Item 8.
+- Splits filing sections into searchable chunks.
+- Creates OpenAI embeddings for filing chunks.
+- Stores chunks and embeddings in ChromaDB for semantic search.
+- Stores structured filing and chunk metadata in PostgreSQL.
+- Applies metadata-filtered retrieval by official SEC section.
+- Generates source-grounded answers with retrieved source chunks.
+- Compares two companies across selected SEC filing sections.
+- Displays retrieved sources separately for single-company and comparison workflows.
+- Provides a PostgreSQL Metadata Dashboard for indexed filings and section-level chunk counts.
+- Runs locally with Streamlit, Docker, and Docker Compose.
+- Uses GitHub Actions for validation.
+
+Sample Questions Tested:
 1. What are the company's main risk factors?
 2. What are the company's top 5 risk factors?
 3. Summarize the business model in simple terms.
@@ -15,55 +65,82 @@ Tested Questions:
 5. What are the major legal and regulatory risks?
 6. What does the company say about competition?
 
-Current Status:
-MVP successfully built and tested locally. Screenshots saved for portfolio documentation.
+Comparison Questions Tested:
+1. Compare the main risk factors between two companies.
+2. How do these companies describe cybersecurity risks differently?
+3. Compare the competitive pressures discussed by both companies.
+4. What legal or regulatory risks are similar across both filings?
+5. Which company appears more exposed to financial risk based on the retrieved sections?
 
-Next Version:
-Add section filters for Risk Factors, Business, MD&A, Cybersecurity, Legal Proceedings, and Financial Statements.
+Security Note:
+The .env file is not included in GitHub because it contains private API credentials. API keys, database passwords, and environment-specific secrets must remain private and should not be committed to the repository.
 
-GitHub Repository:
-https://github.com/praneethkorada-1998/sec-10k-rag-assistant-v1
+Important Local Commands:
+cd C:\Users\prane\sec-10k-rag-assistant
 
-Final Version 1 Status:
-SEC 10-K Intelligence Assistant V1 is completed, tested locally, documented, and uploaded to GitHub.
+Run Streamlit app:
+py -m streamlit run app.py
 
-GitHub Repository:
-https://github.com/praneethkorada-1998/sec-10k-rag-assistant-v1
+Build Docker image:
+docker build -t sec-filing-intelligence-platform:v7 .
 
-Completion Date:
+Run Docker app:
+docker run --rm -p 8501:8501 --env-file .env sec-filing-intelligence-platform:v7
+
+Start PostgreSQL with Docker Compose:
+docker compose up -d
+
+Check running containers:
+docker ps
+
+Run retrieval evaluation:
+py run_evaluation.py --ticker AAPL --top-k 10
+
+Version 1 Completed:
+- Built the initial Streamlit-based SEC 10-K RAG MVP.
+- Added public SEC EDGAR 10-K filing ingestion.
+- Parsed filing HTML into readable text.
+- Split filing text into searchable chunks.
+- Generated OpenAI embeddings for filing chunks.
+- Stored document chunks and embeddings in ChromaDB.
+- Retrieved relevant chunks using semantic search.
+- Generated source-grounded answers through the Streamlit interface.
+- Added README, requirements, project notes, screenshots, and pushed to GitHub.
+
+Version 1 Completion Date:
 May 6, 2026
 
-Next Planned Upgrade:
-Version 2 - Add section filters for Risk Factors, Business, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks.
+Version 2 Completed:
+- Added section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks.
+- Added lightweight section tagging for SEC 10-K chunks.
+- Added section filter dropdown in Streamlit.
+- Enabled targeted retrieval using ticker and section metadata.
+- Updated retrieved source display to show section names.
+- Improved explainability by displaying retrieved source chunks.
 
-Version 2 Status:
-Added section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks.
-
-Version 2 Features:
-- Added lightweight section tagging for SEC 10-K chunks
-- Added section filter dropdown in Streamlit
-- Enabled targeted retrieval using ticker and section metadata
-- Updated retrieved source display to show section names
-
-Completion Date:
+Version 2 Completion Date:
 May 7, 2026
 
-Version 3 Status:
-Added Docker deployment preparation and evaluation documentation.
+Version 3 Completed:
+- Refactored the app into modular source files.
+- Created src/config.py for environment configuration.
+- Created src/sec_client.py for SEC EDGAR requests and filing downloads.
+- Created src/parser.py for HTML cleaning, chunking, and section classification.
+- Created src/embeddings.py for OpenAI embedding generation.
+- Created src/vector_store.py for ChromaDB storage and semantic retrieval.
+- Created src/rag.py for source-grounded answer generation.
+- Created src/ingestion.py for filing ingestion orchestration.
+- Updated app.py to mainly handle the Streamlit user interface.
+- Added Dockerfile for containerized Streamlit app execution.
+- Added .dockerignore to prevent secrets, local vector database files, cache files, and screenshots from being copied into Docker images.
+- Added evaluation_questions.md to manually test retrieval quality.
+- Built Docker image and successfully ran the app in Docker.
 
-Version 3 Features Added:
-- Added Dockerfile for containerized Streamlit app execution
-- Added .dockerignore to prevent secrets, local vector database files, cache files, and screenshots from being copied into Docker images
-- Added evaluation_questions.md to manually test retrieval quality across Risk Factors, Business, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks
-
-Completion Date:
-May 7, 2026
-
-Docker Verification:
+Version 3 Docker Verification:
 Built Docker image sec-10k-rag-assistant:v3 and successfully ran the Streamlit application in a Docker container using the local .env file.
 
-Status:
-Version 3 Docker setup verified successfully.
+Version 3 Completion Date:
+May 7, 2026
 
 Version 4 Completed:
 - Added Company Comparison Mode in the Streamlit UI.
@@ -71,9 +148,12 @@ Version 4 Completed:
 - Enabled comparison between two selected companies using SEC 10-K filings.
 - Reused section-level filters for comparison across Risk Factors, Cybersecurity, Competition, Legal / Regulatory, Financial Risks, and Business.
 - Added comparison answer generation in src/rag.py.
-- Displayed retrieved sources separately for Company A and Company B.
+- Retrieved contexts separately for Company A and Company B.
+- Displayed retrieved sources separately for each company.
 - Tested comparison mode with risk factors, cybersecurity, and competition questions.
 - Added Version 4 comparison screenshots.
+- Updated README and project notes.
+- Pushed Version 4 to GitHub.
 
 Version 5 Completed:
 - Added automated retrieval evaluation pipeline.
@@ -87,16 +167,30 @@ Version 5 Completed:
 - Generated JSON and Markdown evaluation reports in evaluation_results/.
 - Added GitHub Actions CI validation for Python syntax and evaluation JSON.
 - Added V5 screenshots for retrieval evaluation results and CI success.
+- Updated README and pushed Version 5 to GitHub.
 
 Version 6 Completed:
 - Added formal SEC Item parsing for official 10-K sections.
-- Extracted and tagged Item 1 - Business, Item 1A - Risk Factors, Item 1C - Cybersecurity, Item 3 - Legal Proceedings, Item 7 - MD&A, Item 7A - Market Risk, and Item 8 - Financial Statements.
+- Replaced lightweight keyword-only section tagging with official filing structure parsing.
+- Extracted and tagged Item 1 - Business.
+- Extracted and tagged Item 1A - Risk Factors.
+- Extracted and tagged Item 1C - Cybersecurity.
+- Extracted and tagged Item 3 - Legal Proceedings.
+- Extracted and tagged Item 7 - MD&A.
+- Extracted and tagged Item 7A - Market Risk.
+- Extracted and tagged Item 8 - Financial Statements.
 - Updated ingestion to store official SEC item metadata in ChromaDB.
+- Added sec_item metadata field.
 - Created a clean V6 ChromaDB collection for SEC-item-based retrieval.
 - Validated parser output using debug_sec_items.py.
 - Validated ChromaDB metadata using debug_chroma_v6.py.
-- Confirmed section-filtered retrieval for Item 1A - Risk Factors and Item 1C - Cybersecurity.
-- Added V6 screenshots for official SEC item retrieval.
+- Confirmed section-filtered retrieval for Item 1A - Risk Factors.
+- Confirmed section-filtered retrieval for Item 1C - Cybersecurity.
+- Confirmed company comparison using official Item 1A - Risk Factors filtering.
+- Added V6 screenshots for official SEC item retrieval and company comparison.
+- Updated README and project notes.
+- Pushed Version 6 to GitHub.
+- Removed local debug and backup files after validation.
 
 Version 7 Completed:
 - Added PostgreSQL metadata store using Docker Compose.
@@ -104,9 +198,49 @@ Version 7 Completed:
 - Added psycopg2-binary dependency.
 - Created src/database.py for PostgreSQL connection, table creation, filing metadata, and chunk metadata operations.
 - Created filings table for ticker, CIK, accession, filing date, source URL, chunk count, ingestion status, and created timestamp.
-- Created filing_chunks table for ticker, accession, chunk number, section name, and SEC item.
+- Created filing_chunks table for ticker, accession, chunk number, section name, SEC item, and created timestamp.
 - Updated ingestion pipeline to write structured metadata to PostgreSQL after ChromaDB indexing.
+- Stored filing-level metadata in PostgreSQL.
+- Stored section-level chunk metadata in PostgreSQL.
 - Added Metadata Dashboard tab in Streamlit.
-- Displayed indexed filings and section-level chunk counts from PostgreSQL.
-- Validated AAPL filing metadata and section metadata storage.
+- Displayed indexed filings from PostgreSQL.
+- Displayed section-level chunk counts from PostgreSQL.
+- Validated AAPL filing metadata storage.
+- Validated AAPL section metadata storage.
+- Confirmed PostgreSQL 16 container running through Docker Compose.
 - Added V7 PostgreSQL metadata dashboard screenshot.
+- Updated README and project notes.
+- Updated app footer to show current platform features and Version 7 status.
+- Pushed Version 7 to GitHub.
+
+Current Data Storage Design:
+- ChromaDB stores document chunks, embeddings, and vector-search metadata.
+- PostgreSQL stores structured filing metadata and chunk metadata.
+- Streamlit displays the application UI and Metadata Dashboard.
+- Docker Compose runs the PostgreSQL service locally.
+- Local .env stores private API keys and configuration values.
+
+Current Platform Value:
+The platform now demonstrates a serious data engineering and AI architecture. It is no longer just a RAG chatbot. It includes ingestion, parsing, formal SEC item extraction, vector indexing, semantic retrieval, metadata filtering, source-grounded generation, company comparison, retrieval evaluation, CI validation, PostgreSQL metadata storage, Docker-based infrastructure, and a metadata dashboard.
+
+Next Planned Upgrade:
+Version 8 - Batch Ingestion for Multiple Companies
+
+Version 8 Planned Features:
+- Add multi-select company picker in Streamlit.
+- Add batch ingestion function for multiple selected companies.
+- Add “Batch index selected companies” button.
+- Store each company’s filing and chunk metadata in PostgreSQL.
+- Show multiple indexed companies in the Metadata Dashboard.
+- Add progress/status for each company during ingestion.
+- Test batch ingestion with AAPL, MSFT, and NVDA.
+- Update README and project notes.
+- Add V8 screenshots.
+- Commit and push Version 8 to GitHub.
+
+Future Roadmap:
+- Version 8: Batch ingestion for multiple companies.
+- Version 9: Multi-year filing comparison.
+- Version 10: Analyst brief generator.
+- Version 11: Risk theme extraction.
+- Version 12: Cloud deployment with user access and cost controls.

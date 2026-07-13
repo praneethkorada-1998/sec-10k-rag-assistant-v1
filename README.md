@@ -11,17 +11,20 @@ This project is a data-engineered RAG-based financial document intelligence plat
 SEC 10-K filings are long and difficult to review manually. Analysts, business users, and compliance teams often need quick answers from these filings. This project demonstrates how GenAI and RAG can help retrieve relevant filing sections and generate source-grounded answers.
 
 
-
 ## Tools Used
 
 - Python
 - Streamlit
 - ChromaDB
+- PostgreSQL
+- Docker
+- Docker Compose
 - OpenAI Embeddings
 - OpenAI Chat Model
 - SEC EDGAR API
 - BeautifulSoup
-- Docker
+- GitHub Actions
+- psycopg2-binary
 - python-dotenv
 
 
@@ -29,16 +32,18 @@ SEC 10-K filings are long and difficult to review manually. Analysts, business u
 
 - Downloads latest public SEC 10-K filings from SEC EDGAR
 - Parses and cleans SEC filing HTML
-- Splits long filings into searchable chunks
+- Performs formal SEC item parsing for official 10-K sections
+- Extracts Item 1, Item 1A, Item 1C, Item 3, Item 7, Item 7A, and Item 8
+- Splits filing sections into searchable chunks
 - Creates OpenAI embeddings for filing chunks
-- Stores document chunks and metadata in ChromaDB
-- Retrieves relevant chunks using semantic search
-- Applies section filters for Business, Risk Factors, Cybersecurity, Competition, Legal / Regulatory, and Financial Risks
+- Stores chunks and embeddings in ChromaDB for semantic search
+- Stores structured filing and chunk metadata in PostgreSQL
+- Applies metadata-filtered retrieval by official SEC section
 - Generates source-grounded answers with retrieved source chunks
-- Adds Company Comparison Mode for comparing two public companies
-- Displays retrieved sources separately for single-company and comparison workflows
-- Runs locally with Streamlit or through Docker
-
+- Compares two companies across selected SEC filing sections
+- Displays a PostgreSQL Metadata Dashboard for indexed filings and section-level chunk counts
+- Runs locally with Streamlit, Docker, and Docker Compose
+- Uses GitHub Actions for validation
 
 ## Sample Questions Tested
 
@@ -61,17 +66,16 @@ SEC 10-K filings are long and difficult to review manually. Analysts, business u
 
 ## Current Status
 
-Version 4 completed and pushed to GitHub. The app supports single-company SEC 10-K question answering, section-filtered retrieval, company comparison mode, modular source code, Docker-based execution, and project screenshots.
+Version 7 completed and pushed to GitHub. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, and a Streamlit Metadata Dashboard.
 
 ## Next Improvements
 
-- Add formal SEC Item parsing for Item 1, Item 1A, Item 7, and Item 7A
-- Add PostgreSQL metadata storage for ticker, CIK, filing date, accession number, and ingestion status
+- Add batch ingestion for multiple companies
+- Add multi-year filing comparison
+- Add risk theme extraction
+- Add analyst brief generator
 - Add AWS S3 storage for raw filing documents
-- Add automated retrieval evaluation metrics
-- Add GitHub Actions for CI/CD checks
 - Add cloud deployment using Streamlit Community Cloud, Render, Azure Container Apps, or AWS ECS
-
 
 ## Security Note
 
@@ -126,13 +130,13 @@ flowchart TD
 Build the Docker image:
 
 ```powershell
-docker build -t sec-10k-rag-assistant:v4 .
+docker build -t sec-filing-intelligence-platform:v7 .
 ```
 
 Run the app in Docker:
 
 ```powershell
-docker run --rm -p 8501:8501 --env-file .env sec-10k-rag-assistant:v4
+docker run --rm -p 8501:8501 --env-file .env sec-filing-intelligence-platform:v7
 ```
 
 Open the app:
@@ -162,9 +166,14 @@ Version 5 adds an automated evaluation pipeline for measuring whether semantic r
 The selected company must already be indexed in ChromaDB.
 
 ```powershell
-py run_evaluation.py --ticker AAPL --top-k 10 
+py run_evaluation.py --ticker AAPL --top-k 10
+```
 
-evaluation_results/ 
+Reports are generated in:
+
+```text
+evaluation_results/
+```
 
 **Version 6:** Formal SEC Item Parsing
 
@@ -215,3 +224,10 @@ The platform now stores:
 
 ```powershell
 docker compose up -d
+```
+
+Check container status:
+
+```powershell
+docker ps
+```

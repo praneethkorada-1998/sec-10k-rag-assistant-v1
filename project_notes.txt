@@ -97,3 +97,16 @@ Version 6 Completed:
 - Validated ChromaDB metadata using debug_chroma_v6.py.
 - Confirmed section-filtered retrieval for Item 1A - Risk Factors and Item 1C - Cybersecurity.
 - Added V6 screenshots for official SEC item retrieval.
+
+Version 7 Completed:
+- Added PostgreSQL metadata store using Docker Compose.
+- Added docker-compose.yml with PostgreSQL 16 service.
+- Added psycopg2-binary dependency.
+- Created src/database.py for PostgreSQL connection, table creation, filing metadata, and chunk metadata operations.
+- Created filings table for ticker, CIK, accession, filing date, source URL, chunk count, ingestion status, and created timestamp.
+- Created filing_chunks table for ticker, accession, chunk number, section name, and SEC item.
+- Updated ingestion pipeline to write structured metadata to PostgreSQL after ChromaDB indexing.
+- Added Metadata Dashboard tab in Streamlit.
+- Displayed indexed filings and section-level chunk counts from PostgreSQL.
+- Validated AAPL filing metadata and section metadata storage.
+- Added V7 PostgreSQL metadata dashboard screenshot.

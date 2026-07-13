@@ -1,3 +1,4 @@
+from src.database import initialize_database, upsert_chunk_metadata, upsert_filing_metadata
 from src.embeddings import get_embeddings_batch
 from src.parser import chunk_text_with_sec_items, clean_text
 from src.sec_client import download_filing_html
@@ -18,7 +19,7 @@ def ingest_10k(ticker: str) -> int:
     for index, record in enumerate(chunk_records):
         chunk, section_name, item_number = record
 
-        chunk_id = f"v6_items_{ticker}_{filing['accession']}_{index}"
+        chunk_id = f"v7_{ticker}_{filing['accession']}_{index}"
 
         ids.append(chunk_id)
         documents.append(chunk)
@@ -48,5 +49,14 @@ def ingest_10k(ticker: str) -> int:
         embeddings=embeddings,
         metadatas=metadatas,
     )
+
+    initialize_database()
+    upsert_filing_metadata(
+        filing=filing,
+        ticker=ticker,
+        chunk_count=len(documents),
+        ingestion_status="completed",
+    )
+    upsert_chunk_metadata(metadatas)
 
     return len(documents)

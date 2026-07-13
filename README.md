@@ -188,3 +188,30 @@ This improves section-filtered retrieval accuracy by storing official SEC item m
 - Confirmed ChromaDB metadata storage with `sec_item`
 - Confirmed retrieval for `Item 1A - Risk Factors`
 - Confirmed retrieval for `Item 1C - Cybersecurity`
+
+**Version 7:** PostgreSQL Metadata Store
+
+Version 7 adds a structured PostgreSQL metadata layer using Docker Compose.
+
+The platform now stores:
+
+- Filing-level metadata including ticker, CIK, accession number, filing date, source URL, chunk count, ingestion status, and created timestamp
+- Chunk-level metadata including ticker, accession number, chunk number, official SEC section name, and SEC item
+
+### V7 Architecture Update
+
+- ChromaDB stores document chunks, embeddings, and vector-search metadata
+- PostgreSQL stores structured filing and chunk metadata
+
+### V7 Validation
+
+- PostgreSQL 16 container running with Docker Compose
+- AAPL filing and section metadata successfully stored
+- Metadata Dashboard tab added to Streamlit
+- V7 dashboard screenshot added
+- Streamlit displays a Metadata Dashboard using PostgreSQL query results
+
+### Run PostgreSQL Locally
+
+```powershell
+docker compose up -d

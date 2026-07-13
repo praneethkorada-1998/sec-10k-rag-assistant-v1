@@ -22,6 +22,7 @@ Notes:
 """
 import streamlit as st
 
+from src.database import get_filing_summary, get_section_summary
 from src.config import OPENAI_API_KEY
 from src.ingestion import ingest_10k
 from src.parser import SECTION_OPTIONS
@@ -56,13 +57,15 @@ with st.sidebar:
                 )
             except Exception as exc:
                 st.error(f"Ingestion failed: {exc}")
-
     st.divider()
     st.header("2. Search Settings")
     selected_section = st.selectbox("Section filter", SECTION_OPTIONS)
     top_k = st.slider("Retrieved chunks per company", min_value=3, max_value=10, value=5)
 
-single_tab, comparison_tab = st.tabs(["Single Company Q&A", "Company Comparison"])
+single_tab, comparison_tab, metadata_tab = st.tabs(
+    ["Single Company Q&A", "Company Comparison", "Metadata Dashboard"]
+)
+ 
 
 with single_tab:
     st.subheader("Ask a question about one company's 10-K")
@@ -217,6 +220,27 @@ with comparison_tab:
                                     st.caption(f"Distance: {ctx['distance']}")
                 except Exception as exc:
                     st.error(f"Company comparison failed: {exc}")
+with metadata_tab:
+    st.subheader("PostgreSQL Metadata Dashboard")
+
+    try:
+        filing_summary = get_filing_summary()
+        section_summary = get_section_summary()
+
+        st.markdown("### Indexed Filings")
+        if filing_summary:
+            st.dataframe(filing_summary, use_container_width=True)
+        else:
+            st.info("No filing metadata found yet. Index a filing first.")
+
+        st.markdown("### Section-Level Chunk Counts")
+        if section_summary:
+            st.dataframe(section_summary, use_container_width=True)
+        else:
+            st.info("No section metadata found yet. Index a filing first.")
+
+    except Exception as exc:
+        st.error(f"Unable to load PostgreSQL metadata: {exc}")
 
 st.divider()
 

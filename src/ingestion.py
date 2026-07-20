@@ -60,3 +60,23 @@ def ingest_10k(ticker: str) -> int:
     upsert_chunk_metadata(metadatas)
 
     return len(documents)
+def batch_ingest_10k(tickers: list[str]) -> dict:
+    """Ingest latest 10-K filings for multiple tickers."""
+    results = {}
+
+    for ticker in tickers:
+        try:
+            chunk_count = ingest_10k(ticker)
+            results[ticker] = {
+                "status": "completed",
+                "chunk_count": chunk_count,
+                "error": None,
+            }
+        except Exception as exc:
+            results[ticker] = {
+                "status": "failed",
+                "chunk_count": 0,
+                "error": str(exc),
+            }
+
+    return results 

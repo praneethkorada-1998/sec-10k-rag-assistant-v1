@@ -215,31 +215,42 @@ Version 7 Completed:
 
 Current Data Storage Design:
 - ChromaDB stores document chunks, embeddings, and vector-search metadata.
-- PostgreSQL stores structured filing metadata and chunk metadata.
-- Streamlit displays the application UI and Metadata Dashboard.
+- PostgreSQL stores structured filing metadata and chunk-level SEC item metadata.
+- Streamlit displays the application UI, company comparison workflow, batch ingestion controls, and Metadata Dashboard.
 - Docker Compose runs the PostgreSQL service locally.
 - Local .env stores private API keys and configuration values.
+- Batch ingestion writes metadata for multiple companies into PostgreSQL while storing searchable vectors in ChromaDB.
 
 Current Platform Value:
-The platform now demonstrates a serious data engineering and AI architecture. It is no longer just a RAG chatbot. It includes ingestion, parsing, formal SEC item extraction, vector indexing, semantic retrieval, metadata filtering, source-grounded generation, company comparison, retrieval evaluation, CI validation, PostgreSQL metadata storage, Docker-based infrastructure, and a metadata dashboard.
+The platform now demonstrates a serious data engineering and AI architecture. It is no longer just a RAG chatbot. It includes SEC EDGAR ingestion, formal SEC item parsing, vector indexing, semantic retrieval, metadata filtering, source-grounded generation, company comparison, retrieval evaluation, GitHub Actions CI validation, PostgreSQL metadata storage, Docker-based infrastructure, a Metadata Dashboard, and batch ingestion for multiple companies.
+
+Version 8 Completed:
+- Added batch ingestion for multiple companies.
+- Added multi-select company picker in the Streamlit sidebar.
+- Added “Batch index selected companies” button.
+- Added batch_ingest_10k function in src/ingestion.py.
+- Enabled users to index multiple companies in one workflow.
+- Stored each company’s filing metadata in PostgreSQL.
+- Stored each company’s section-level chunk metadata in PostgreSQL.
+- Confirmed batch ingestion with AAPL and MSFT.
+- Confirmed Metadata Dashboard displays multiple indexed companies.
+- Added V8 batch ingestion screenshot.
 
 Next Planned Upgrade:
-Version 8 - Batch Ingestion for Multiple Companies
+Version 9 - Multi-Year Filing Comparison
 
-Version 8 Planned Features:
-- Add multi-select company picker in Streamlit.
-- Add batch ingestion function for multiple selected companies.
-- Add “Batch index selected companies” button.
-- Store each company’s filing and chunk metadata in PostgreSQL.
-- Show multiple indexed companies in the Metadata Dashboard.
-- Add progress/status for each company during ingestion.
-- Test batch ingestion with AAPL, MSFT, and NVDA.
+Version 9 Planned Features:
+- Add support for comparing filings across different years for the same company.
+- Compare changes in Item 1A - Risk Factors year over year.
+- Compare changes in Item 1C - Cybersecurity year over year.
+- Identify newly added, removed, or changed filing language.
+- Store filing year metadata for historical comparison.
+- Add year selection controls in Streamlit.
+- Add multi-year comparison screenshots.
 - Update README and project notes.
-- Add V8 screenshots.
-- Commit and push Version 8 to GitHub.
+- Commit and push Version 9 to GitHub.
 
 Future Roadmap:
-- Version 8: Batch ingestion for multiple companies.
 - Version 9: Multi-year filing comparison.
 - Version 10: Analyst brief generator.
 - Version 11: Risk theme extraction.

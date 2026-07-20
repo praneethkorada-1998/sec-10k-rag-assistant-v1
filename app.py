@@ -24,7 +24,7 @@ import streamlit as st
 
 from src.database import get_filing_summary, get_section_summary
 from src.config import OPENAI_API_KEY
-from src.ingestion import ingest_10k
+from src.ingestion import batch_ingest_10k, ingest_10k
 from src.parser import SECTION_OPTIONS
 from src.rag import generate_answer, generate_comparison_answer
 from src.sec_client import COMPANIES
@@ -57,6 +57,30 @@ with st.sidebar:
                 )
             except Exception as exc:
                 st.error(f"Ingestion failed: {exc}")
+    st.markdown("### Batch Ingestion")
+    batch_tickers = st.multiselect(
+        "Select companies to batch index",
+        list(COMPANIES.keys()),
+        default=["AAPL", "MSFT"] if "AAPL" in COMPANIES and "MSFT" in COMPANIES else [],
+    )
+
+    if st.button("Batch index selected companies"):
+        if not batch_tickers:
+            st.warning("Please select at least one company.")
+        else:
+            with st.spinner("Batch indexing selected companies..."):
+                batch_results = batch_ingest_10k(batch_tickers)
+
+            st.markdown("#### Batch Results")
+            for ticker, result in batch_results.items():
+                if result["status"] == "completed":
+                    st.success(
+                        f"{ticker}: completed with {result['chunk_count']} chunks"
+                    )
+                else:
+                    st.error(
+                        f"{ticker}: failed - {result['error']}"
+                    )
     st.divider()
     st.header("2. Search Settings")
     selected_section = st.selectbox("Section filter", SECTION_OPTIONS)

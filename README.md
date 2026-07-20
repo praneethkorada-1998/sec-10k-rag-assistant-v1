@@ -66,11 +66,10 @@ SEC 10-K filings are long and difficult to review manually. Analysts, business u
 
 ## Current Status
 
-Version 7 completed and pushed to GitHub. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, and a Streamlit Metadata Dashboard.
+Version 8 completed and pushed to GitHub. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, a Streamlit Metadata Dashboard, and batch ingestion for multiple companies.
 
 ## Next Improvements
 
-- Add batch ingestion for multiple companies
 - Add multi-year filing comparison
 - Add risk theme extraction
 - Add analyst brief generator
@@ -230,4 +229,25 @@ Check container status:
 
 ```powershell
 docker ps
+
+**Version 8:** Batch Ingestion for Multiple Companies
+
+Version 8 adds batch ingestion so users can index multiple companies in one workflow.
+
+The platform now supports:
+
+- Selecting multiple companies from the Streamlit sidebar
+- Batch indexing selected companies
+- Running the full ingestion pipeline for each selected ticker
+- Storing each company’s filing metadata in PostgreSQL
+- Storing each company’s section-level chunk metadata in PostgreSQL
+- Displaying multiple indexed companies in the Metadata Dashboard
+
+### V8 Validation
+
+- Batch ingestion tested with AAPL and MSFT
+- AAPL indexed with 58 chunks
+- MSFT indexed with 125 chunks
+- Metadata Dashboard confirmed both companies
+- V8 batch ingestion screenshot added
 ```

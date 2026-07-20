@@ -229,6 +229,8 @@ Check container status:
 
 ```powershell
 docker ps
+```
+
 
 **Version 8:** Batch Ingestion for Multiple Companies
 
@@ -250,4 +252,3 @@ The platform now supports:
 - MSFT indexed with 125 chunks
 - Metadata Dashboard confirmed both companies
 - V8 batch ingestion screenshot added
-```

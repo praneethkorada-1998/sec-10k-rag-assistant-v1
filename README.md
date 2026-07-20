@@ -5,6 +5,10 @@
 
 This project is a data-engineered RAG-based financial document intelligence platform built using public SEC EDGAR 10-K filings.
 
+## Demo
+
+![SEC Filing Intelligence Platform Demo](SEC%2010K%20RAG%20Project%20Screenshots/sec_filing_platform_demo.gif)
+
 
 ## Problem Statement
 

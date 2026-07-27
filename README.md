@@ -130,13 +130,13 @@ flowchart TD
 Build the Docker image:
 
 ```powershell
-docker build -t sec-filing-intelligence-platform:v7 .
+docker build -t sec-filing-intelligence-platform:v9.
 ```
 
 Run the app in Docker:
 
 ```powershell
-docker run --rm -p 8501:8501 --env-file .env sec-filing-intelligence-platform:v7
+docker run --rm -p 8501:8501 --env-file .env sec-filing-intelligence-platform:v9
 ```
 
 Open the app:

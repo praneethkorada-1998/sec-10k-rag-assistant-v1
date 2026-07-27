@@ -104,13 +104,21 @@ The `.env` file is not included in GitHub because it contains private API creden
 
 ```mermaid
 flowchart TD
-    UI[Streamlit app.py] --> ING[Ingestion Pipeline]
-    ING --> SEC[SEC EDGAR Client]
-    ING --> PARSER[Parser and Section Classifier]
-    ING --> EMB[OpenAI Embeddings]
-    EMB --> VECTOR[ChromaDB Vector Store]
+    UI["Streamlit App"]
+    ING["Ingestion Pipeline"]
+    SEC["SEC EDGAR Client"]
+    PARSER["Parser and Section Classifier"]
+    EMB["OpenAI Embeddings"]
+    VECTOR["ChromaDB Vector Store"]
+    RAG["RAG Answer Generation"]
+
+    UI --> ING
+    ING --> SEC
+    SEC --> PARSER
+    PARSER --> EMB
+    EMB --> VECTOR
     UI --> VECTOR
-    VECTOR --> RAG[RAG Answer Generation]
+    VECTOR --> RAG
     RAG --> UI
 ```
 

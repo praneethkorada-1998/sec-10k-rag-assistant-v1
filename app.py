@@ -24,10 +24,18 @@ import streamlit as st
 
 from src.database import get_filing_summary, get_section_summary
 from src.config import OPENAI_API_KEY
-from src.ingestion import batch_ingest_10k, ingest_10k
+from src.ingestion import (
+    batch_ingest_10k,
+    ingest_10k,
+    ingest_10k_by_accession,
+)
 from src.parser import SECTION_OPTIONS
-from src.rag import generate_answer, generate_comparison_answer
-from src.sec_client import COMPANIES
+from src.rag import (
+    generate_answer,
+    generate_comparison_answer,
+    generate_multi_year_comparison_answer,
+)
+from src.sec_client import COMPANIES, fetch_10k_filings
 from src.vector_store import retrieve_context
 
 
@@ -86,10 +94,14 @@ with st.sidebar:
     selected_section = st.selectbox("Section filter", SECTION_OPTIONS)
     top_k = st.slider("Retrieved chunks per company", min_value=3, max_value=10, value=5)
 
-single_tab, comparison_tab, metadata_tab = st.tabs(
-    ["Single Company Q&A", "Company Comparison", "Metadata Dashboard"]
+single_tab, comparison_tab, multi_year_tab, metadata_tab = st.tabs(
+    [
+        "Single Company Q&A",
+        "Company Comparison",
+        "Multi-Year Comparison",
+        "Metadata Dashboard",
+    ]
 )
- 
 
 with single_tab:
     st.subheader("Ask a question about one company's 10-K")
@@ -244,6 +256,218 @@ with comparison_tab:
                                     st.caption(f"Distance: {ctx['distance']}")
                 except Exception as exc:
                     st.error(f"Company comparison failed: {exc}")
+
+with multi_year_tab:
+    st.subheader("Compare one company's 10-K filings across two years")
+
+    historical_ticker = st.selectbox(
+        "Company",
+        list(COMPANIES.keys()),
+        key="historical_ticker",
+    )
+
+    try:
+        historical_filings = fetch_10k_filings(
+            historical_ticker,
+            limit=5,
+        )
+
+        filings_by_year = {
+            filing["filing_year"]: filing
+            for filing in historical_filings
+        }
+
+        available_years = sorted(filings_by_year.keys())
+
+        if len(available_years) < 2:
+            st.warning(
+                "At least two historical 10-K filings are required."
+            )
+        else:
+            year_col_a, year_col_b = st.columns(2)
+
+            with year_col_a:
+                earlier_year = st.selectbox(
+                    "Earlier filing year",
+                    available_years,
+                    index=len(available_years) - 2,
+                    key="earlier_year",
+                )
+
+            with year_col_b:
+                later_year = st.selectbox(
+                    "Later filing year",
+                    available_years,
+                    index=len(available_years) - 1,
+                    key="later_year",
+                )
+
+            earlier_filing = filings_by_year[earlier_year]
+            later_filing = filings_by_year[later_year]
+
+            if int(earlier_year) >= int(later_year):
+                st.info(
+                    "Choose an earlier year on the left and a later year on the right."
+                )
+
+            if st.button(
+                "Download & index selected years",
+                key="index_selected_years",
+            ):
+                if earlier_year == later_year:
+                    st.warning("Please select two different filing years.")
+                else:
+                    try:
+                        with st.spinner(
+                            f"Indexing {historical_ticker} {earlier_year} 10-K..."
+                        ):
+                            earlier_count = ingest_10k_by_accession(
+                                historical_ticker,
+                                earlier_filing["accession"],
+                            )
+
+                        with st.spinner(
+                            f"Indexing {historical_ticker} {later_year} 10-K..."
+                        ):
+                            later_count = ingest_10k_by_accession(
+                                historical_ticker,
+                                later_filing["accession"],
+                            )
+
+                        st.success(
+                            f"Indexed {earlier_count} chunks for {earlier_year} "
+                            f"and {later_count} chunks for {later_year}."
+                        )
+                    except Exception as exc:
+                        st.error(f"Historical ingestion failed: {exc}")
+
+            multi_year_question = st.text_input(
+                "Multi-year comparison question",
+                placeholder=(
+                    "Example: What risk factors were added, removed, "
+                    "or expanded between these filings?"
+                ),
+                key="multi_year_question",
+            )
+
+            if st.button(
+                "Compare filing years",
+                key="compare_filing_years",
+            ) and multi_year_question:
+                if int(earlier_year) >= int(later_year):
+                    st.warning(
+                        "Select an earlier year and a later year."
+                    )
+                else:
+                    with st.spinner(
+                        "Retrieving both filings and analyzing changes..."
+                    ):
+                        try:
+                            earlier_contexts = retrieve_context(
+                                question=multi_year_question,
+                                ticker=historical_ticker,
+                                selected_section=selected_section,
+                                top_k=top_k,
+                                accession=earlier_filing["accession"],
+                            )
+
+                            later_contexts = retrieve_context(
+                                question=multi_year_question,
+                                ticker=historical_ticker,
+                                selected_section=selected_section,
+                                top_k=top_k,
+                                accession=later_filing["accession"],
+                            )
+
+                            if not earlier_contexts or not later_contexts:
+                                st.warning(
+                                    "Missing chunks for one or both years. "
+                                    "Click 'Download & index selected years' first."
+                                )
+                            else:
+                                multi_year_answer = (
+                                    generate_multi_year_comparison_answer(
+                                        question=multi_year_question,
+                                        ticker=historical_ticker,
+                                        year_a=earlier_year,
+                                        contexts_a=earlier_contexts,
+                                        year_b=later_year,
+                                        contexts_b=later_contexts,
+                                        selected_section=selected_section,
+                                    )
+                                )
+
+                                st.markdown("### Multi-Year Comparison")
+                                st.write(multi_year_answer)
+
+                                earlier_col, later_col = st.columns(2)
+
+                                with earlier_col:
+                                    st.markdown(
+                                        f"### {earlier_year} Sources"
+                                    )
+
+                                    for i, ctx in enumerate(
+                                        earlier_contexts,
+                                        start=1,
+                                    ):
+                                        meta = ctx["metadata"]
+                                        section = meta.get(
+                                            "section_name",
+                                            "General",
+                                        )
+
+                                        with st.expander(
+                                            f"{earlier_year} Source {i} | "
+                                            f"{section} | "
+                                            f"Chunk {meta['chunk_number']}"
+                                        ):
+                                            st.write(ctx["text"][:2500])
+                                            st.markdown(
+                                                f"[Open SEC filing]"
+                                                f"({meta['source_url']})"
+                                            )
+                                            st.caption(
+                                                f"Distance: {ctx['distance']}"
+                                            )
+
+                                with later_col:
+                                    st.markdown(
+                                        f"### {later_year} Sources"
+                                    )
+
+                                    for i, ctx in enumerate(
+                                        later_contexts,
+                                        start=1,
+                                    ):
+                                        meta = ctx["metadata"]
+                                        section = meta.get(
+                                            "section_name",
+                                            "General",
+                                        )
+
+                                        with st.expander(
+                                            f"{later_year} Source {i} | "
+                                            f"{section} | "
+                                            f"Chunk {meta['chunk_number']}"
+                                        ):
+                                            st.write(ctx["text"][:2500])
+                                            st.markdown(
+                                                f"[Open SEC filing]"
+                                                f"({meta['source_url']})"
+                                            )
+                                            st.caption(
+                                                f"Distance: {ctx['distance']}"
+                                            )
+
+                        except Exception as exc:
+                            st.error(
+                                f"Multi-year comparison failed: {exc}"
+                            )
+
+    except Exception as exc:
+        st.error(f"Unable to retrieve historical filings: {exc}")
+
 with metadata_tab:
     st.subheader("PostgreSQL Metadata Dashboard")
 

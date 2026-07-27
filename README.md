@@ -34,20 +34,18 @@ SEC 10-K filings are long and difficult to review manually. Analysts, business u
 
 ## Key Features
 
-- Downloads latest public SEC 10-K filings from SEC EDGAR
-- Parses and cleans SEC filing HTML
-- Performs formal SEC item parsing for official 10-K sections
-- Extracts Item 1, Item 1A, Item 1C, Item 3, Item 7, Item 7A, and Item 8
-- Splits filing sections into searchable chunks
-- Creates OpenAI embeddings for filing chunks
-- Stores chunks and embeddings in ChromaDB for semantic search
-- Stores structured filing and chunk metadata in PostgreSQL
-- Applies metadata-filtered retrieval by official SEC section
-- Generates source-grounded answers with retrieved source chunks
-- Compares two companies across selected SEC filing sections
-- Displays a PostgreSQL Metadata Dashboard for indexed filings and section-level chunk counts
-- Runs locally with Streamlit, Docker, and Docker Compose
-- Uses GitHub Actions for validation
+- Retrieves current and historical SEC 10-K filings from SEC EDGAR
+- Parses filing HTML and extracts official Items 1, 1A, 1C, 3, 7, 7A, and 8
+- Splits SEC sections into searchable chunks and creates OpenAI embeddings
+- Stores vectors in ChromaDB and structured metadata in PostgreSQL
+- Filters retrieval by ticker, SEC section, and filing accession number
+- Generates source-grounded answers with supporting filing chunks
+- Compares two companies across selected SEC sections
+- Compares the same company across two filing years
+- Identifies disclosures that were added, removed, expanded, reduced, or materially changed
+- Displays indexed filings and section-level chunk counts in a Metadata Dashboard
+- Supports local execution with Streamlit, Docker, and Docker Compose
+- Uses GitHub Actions for automated validation
 
 ## Sample Questions Tested
 
@@ -70,11 +68,10 @@ SEC 10-K filings are long and difficult to review manually. Analysts, business u
 
 ## Current Status
 
-Version 8 completed and pushed to GitHub. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, a Streamlit Metadata Dashboard, and batch ingestion for multiple companies.
+Version 9 completed and validated locally. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, multi-year filing comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, a Streamlit Metadata Dashboard, and batch ingestion for multiple companies.
 
 ## Next Improvements
 
-- Add multi-year filing comparison
 - Add risk theme extraction
 - Add analyst brief generator
 - Add AWS S3 storage for raw filing documents
@@ -245,7 +242,7 @@ The platform now supports:
 - Selecting multiple companies from the Streamlit sidebar
 - Batch indexing selected companies
 - Running the full ingestion pipeline for each selected ticker
-- Storing each company’s filing metadata in PostgreSQL
+- Storing each company's filing metadata in PostgreSQL
 - Storing each company’s section-level chunk metadata in PostgreSQL
 - Displaying multiple indexed companies in the Metadata Dashboard
 
@@ -256,3 +253,34 @@ The platform now supports:
 - MSFT indexed with 125 chunks
 - Metadata Dashboard confirmed both companies
 - V8 batch ingestion screenshot added
+
+**Version 9:** Multi-Year Filing Comparison
+
+Version 9 adds historical SEC 10-K retrieval and multi-year comparison for the same company.
+
+The platform now supports:
+
+- Retrieving up to five historical 10-K filings from SEC EDGAR
+- Selecting two filing years for the same company
+- Downloading and indexing filings by SEC accession number
+- Storing filing year metadata with indexed chunks
+- Filtering ChromaDB retrieval by ticker, section, and accession number
+- Comparing disclosures across two filing years
+- Identifying disclosures that were added, removed, expanded, reduced, or materially changed
+- Displaying separate source chunks and SEC filing links for each year
+
+### V9 Validation
+
+- Historical filing retrieval tested with AAPL filings from 2021 through 2025
+- AAPL 2024 filing indexed with 56 chunks
+- Accession-filtered retrieval returned only AAPL 2024 chunks
+- Multi-Year Comparison tab added to Streamlit
+- AAPL 2024 versus 2025 comparison completed successfully
+- Year-specific source citations displayed correctly
+- V9 interface and comparison-result screenshots added
+
+### V9 Screenshots
+
+![V9 Multi-Year Comparison Interface](SEC%2010K%20RAG%20Project%20Screenshots/v9_multi_year_interface.png)
+
+![V9 Multi-Year Comparison Results](SEC%2010K%20RAG%20Project%20Screenshots/v9_multi_year_results.png)

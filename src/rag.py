@@ -109,3 +109,64 @@ Company B SEC 10-K context:
         input=prompt,
     )
     return response.output_text
+
+def generate_multi_year_comparison_answer(
+    question: str,
+    ticker: str,
+    year_a: str,
+    contexts_a: List[Dict],
+    year_b: str,
+    contexts_b: List[Dict],
+    selected_section: str,
+) -> str:
+    """Compare the same company's SEC 10-K filings across two years."""
+
+    context_block_a = build_context_block(contexts_a)
+    context_block_b = build_context_block(contexts_b)
+
+    prompt = f"""
+You are a careful financial document assistant. Compare two annual
+SEC 10-K filings for the same company using only the provided context.
+
+Company: {ticker}
+Earlier filing year: {year_a}
+Later filing year: {year_b}
+Selected section filter: {selected_section}
+
+Rules:
+- Do not invent facts.
+- Clearly identify disclosures that were added, removed, expanded,
+  reduced, or materially changed.
+- Do not describe wording as changed unless the supplied context
+  supports that conclusion.
+- If the context is insufficient, clearly say so.
+- Keep the answer business-friendly and concise.
+- Cite {year_a} evidence as [{year_a} Source 1],
+  [{year_a} Source 2], and so on.
+- Cite {year_b} evidence as [{year_b} Source 1],
+  [{year_b} Source 2], and so on.
+- Focus on the selected section when a section filter is active.
+
+User question:
+{question}
+
+Use this answer structure:
+1. {year_a} disclosure summary
+2. {year_b} disclosure summary
+3. New or expanded disclosures
+4. Removed or reduced disclosures
+5. Bottom-line change
+
+{ticker} {year_a} SEC 10-K context:
+{context_block_a}
+
+{ticker} {year_b} SEC 10-K context:
+{context_block_b}
+"""
+
+    response = client.responses.create(
+        model=CHAT_MODEL,
+        input=prompt,
+    )
+
+    return response.output_text

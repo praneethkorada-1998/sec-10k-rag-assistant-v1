@@ -1,20 +1,23 @@
 from src.database import initialize_database, upsert_chunk_metadata, upsert_filing_metadata
 from src.embeddings import get_embeddings_batch
 from src.parser import chunk_text_with_sec_items, clean_text
-from src.sec_client import download_filing_html
+from src.sec_client import download_filing_by_accession, download_filing_html
 from src.vector_store import upsert_chunks
 
 
-def ingest_10k(ticker: str) -> int:
-    """Download, process, embed, and store the latest 10-K with SEC item metadata."""
-    filing = download_filing_html(ticker)
+def _process_and_store_filing(filing: dict, ticker: str) -> int:
+    """Process, embed, and store a downloaded 10-K filing."""
     filing["text"] = clean_text(filing["html"])
-
     chunk_records = chunk_text_with_sec_items(filing["text"])
 
     ids = []
     documents = []
     metadatas = []
+
+    filing_year = filing.get(
+        "filing_year",
+        filing.get("report_date", filing["filing_date"])[:4],
+    )
 
     for index, record in enumerate(chunk_records):
         chunk, section_name, item_number = record
@@ -29,6 +32,7 @@ def ingest_10k(ticker: str) -> int:
                 "cik": filing["cik"],
                 "accession": filing["accession"],
                 "filing_date": filing["filing_date"],
+                "filing_year": filing_year,
                 "source_url": filing["source_url"],
                 "chunk_number": index,
                 "section_name": section_name,
@@ -51,15 +55,31 @@ def ingest_10k(ticker: str) -> int:
     )
 
     initialize_database()
+
     upsert_filing_metadata(
         filing=filing,
         ticker=ticker,
         chunk_count=len(documents),
         ingestion_status="completed",
     )
+
     upsert_chunk_metadata(metadatas)
 
     return len(documents)
+
+
+def ingest_10k(ticker: str) -> int:
+    """Download and ingest the latest 10-K filing."""
+    filing = download_filing_html(ticker)
+    return _process_and_store_filing(filing, ticker)
+
+
+def ingest_10k_by_accession(ticker: str, accession: str) -> int:
+    """Download and ingest a selected historical 10-K filing."""
+    filing = download_filing_by_accession(ticker, accession)
+    return _process_and_store_filing(filing, ticker)
+
+
 def batch_ingest_10k(tickers: list[str]) -> dict:
     """Ingest latest 10-K filings for multiple tickers."""
     results = {}
@@ -79,4 +99,4 @@ def batch_ingest_10k(tickers: list[str]) -> dict:
                 "error": str(exc),
             }
 
-    return results 
+    return results

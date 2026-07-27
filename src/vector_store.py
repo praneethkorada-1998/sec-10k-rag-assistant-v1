@@ -25,28 +25,40 @@ def upsert_chunks(
     )
 
 
-def build_where_filter(ticker: str, selected_section: str) -> Dict:
-    """Build the ChromaDB metadata filter."""
-    if selected_section == "All Sections":
-        return {"ticker": ticker}
+def build_where_filter(
+    ticker: str,
+    selected_section: str,
+    accession: str | None = None,
+) -> Dict:
+    """Build a ChromaDB filter for company, section, and filing."""
+    conditions = [{"ticker": ticker}]
 
-    return {
-        "$and": [
-            {"ticker": ticker},
-            {"section_name": selected_section},
-        ]
-    }
+    if selected_section != "All Sections":
+        conditions.append({"section_name": selected_section})
 
+    if accession:
+        conditions.append({"accession": accession})
+
+    if len(conditions) == 1:
+        return conditions[0]
+
+    return {"$and": conditions}
 
 def retrieve_context(
     question: str,
     ticker: str,
     selected_section: str,
     top_k: int = 5,
+    accession: str | None = None,
 ) -> List[Dict]:
-    """Retrieve relevant filing chunks from ChromaDB."""
+    """Retrieve relevant chunks from a specific SEC filing."""
     question_embedding = get_embedding(question)
-    where_filter = build_where_filter(ticker, selected_section)
+
+    where_filter = build_where_filter(
+        ticker=ticker,
+        selected_section=selected_section,
+        accession=accession,
+    )
 
     results = collection.query(
         query_embeddings=[question_embedding],

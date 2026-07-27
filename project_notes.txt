@@ -5,7 +5,7 @@ GitHub Repository:
 https://github.com/praneethkorada-1998/sec-10k-rag-assistant-v1
 
 Project Summary:
-Built a data-engineered RAG-based financial document intelligence platform using public SEC EDGAR 10-K filings. The platform downloads a company’s latest 10-K filing, parses and cleans the filing HTML, performs formal SEC item parsing, chunks official filing sections, generates OpenAI embeddings, stores vectors in ChromaDB, stores structured metadata in PostgreSQL, retrieves relevant document chunks, generates source-grounded answers, compares companies, and displays filing metadata through a Streamlit interface.
+Built a data-engineered RAG-based financial document intelligence platform using public SEC EDGAR 10-K filings. The platform retrieves current and historical filings, parses official SEC sections, creates OpenAI embeddings, stores vectors in ChromaDB, stores structured metadata in PostgreSQL, generates source-grounded answers, compares companies, and analyzes disclosure changes across filing years through Streamlit.
 
 Problem Statement:
 SEC 10-K filings are long, complex, and difficult to review manually. Analysts, business users, compliance teams, legal teams, and research teams often need quick answers from official filing sections such as Risk Factors, Cybersecurity, MD&A, Legal Proceedings, and Financial Statements. This project demonstrates how data engineering, GenAI, RAG, vector search, metadata filtering, and structured metadata storage can make SEC filings easier to search, compare, evaluate, and analyze.
@@ -38,24 +38,19 @@ Core Architecture:
 - Docker and Docker Compose support repeatable local execution.
 
 Current Status:
-Version 7 completed and pushed to GitHub. The platform supports SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, automated retrieval evaluation, Dockerized execution, GitHub Actions validation, PostgreSQL metadata storage, and a Streamlit Metadata Dashboard.
+Version 9 completed and validated locally. The platform supports current and historical SEC 10-K ingestion, formal SEC item parsing, metadata-filtered semantic retrieval, source-grounded Q&A, company comparison, multi-year filing comparison, batch ingestion, automated retrieval evaluation, PostgreSQL metadata storage, a Streamlit Metadata Dashboard, Dockerized execution, and GitHub Actions validation.
 
 Key Features:
-- Downloads latest public SEC 10-K filings from SEC EDGAR.
-- Parses and cleans SEC filing HTML.
-- Performs formal SEC item parsing for official 10-K sections.
-- Extracts Item 1, Item 1A, Item 1C, Item 3, Item 7, Item 7A, and Item 8.
-- Splits filing sections into searchable chunks.
-- Creates OpenAI embeddings for filing chunks.
-- Stores chunks and embeddings in ChromaDB for semantic search.
-- Stores structured filing and chunk metadata in PostgreSQL.
-- Applies metadata-filtered retrieval by official SEC section.
-- Generates source-grounded answers with retrieved source chunks.
-- Compares two companies across selected SEC filing sections.
-- Displays retrieved sources separately for single-company and comparison workflows.
-- Provides a PostgreSQL Metadata Dashboard for indexed filings and section-level chunk counts.
-- Runs locally with Streamlit, Docker, and Docker Compose.
-- Uses GitHub Actions for validation.
+-Retrieves current and historical SEC 10-K filings from SEC EDGAR.
+-Extracts official Items 1, 1A, 1C, 3, 7, 7A, and 8.
+-Creates searchable chunks and OpenAI embeddings.
+-Stores vectors in ChromaDB and metadata in PostgreSQL.
+-Filters retrieval by ticker, SEC section, and filing accession.
+-Generates source-grounded answers with supporting sources.
+-Compares companies across selected SEC sections.
+-Compares disclosures across filing years and highlights material changes.
+-Displays indexed filing metadata and section-level chunk counts.
+-Runs with Streamlit, Docker Compose, and GitHub Actions.
 
 Sample Questions Tested:
 1. What are the company's main risk factors?
@@ -236,22 +231,31 @@ Version 8 Completed:
 - Confirmed Metadata Dashboard displays multiple indexed companies.
 - Added V8 batch ingestion screenshot.
 
-Next Planned Upgrade:
-Version 9 - Multi-Year Filing Comparison
+Version 9 Completed:
+- Added historical SEC 10-K filing retrieval.
+- Added support for retrieving up to five historical filings for a company.
+- Added filing-year and accession-number metadata.
+- Added ingestion of selected filings by SEC accession number.
+- Refactored ingestion so current and historical filings use the same processing pipeline.
+- Added ChromaDB filtering by ticker, SEC section, and filing accession.
+- Prevented chunks from different filing years from being mixed.
+- Added multi-year comparison answer generation in src/rag.py.
+- Added the Multi-Year Comparison tab in Streamlit.
+- Added company and filing-year selection controls.
+- Added separate retrieved sources and SEC filing links for each year.
+- Added analysis of disclosures that were added, removed, expanded, reduced, or materially changed.
+- Tested historical retrieval using AAPL filings from 2021 through 2025.
+- Indexed the AAPL 2024 filing with 56 chunks.
+- Confirmed accession-filtered retrieval returned only AAPL 2024 chunks.
+- Successfully compared AAPL 2024 and 2025 filings.
+- Confirmed year-specific source citations.
+- Added V9 interface and comparison-result screenshots.
+- Updated README and project notes.
 
-Version 9 Planned Features:
-- Add support for comparing filings across different years for the same company.
-- Compare changes in Item 1A - Risk Factors year over year.
-- Compare changes in Item 1C - Cybersecurity year over year.
-- Identify newly added, removed, or changed filing language.
-- Store filing year metadata for historical comparison.
-- Add year selection controls in Streamlit.
-- Add multi-year comparison screenshots.
-- Update README and project notes.
-- Commit and push Version 9 to GitHub.
+Version 9 Completion Date:
+July 27, 2026
 
 Future Roadmap:
-- Version 9: Multi-year filing comparison.
 - Version 10: Analyst brief generator.
 - Version 11: Risk theme extraction.
 - Version 12: Cloud deployment with user access and cost controls.
